@@ -193,6 +193,26 @@
         projectLinks.forEach(link => {
           link.addEventListener('mouseenter', playRandomPianoNote);
         });
+
+        // Auto-activate audio on first user interaction
+        let audioAutoActivated = false;
+
+        function autoEnableAudio() {
+          if (!audioEnabled && !audioAutoActivated) {
+            audioAutoActivated = true;
+            // Simulate clicking the toggle button to enable audio
+            toggleAudio();
+            // Remove listeners after first activation
+            document.removeEventListener('click', autoEnableAudio);
+            window.removeEventListener('scroll', autoEnableAudio);
+          }
+        }
+
+        // Option 1: Auto-activate on first click anywhere
+        document.addEventListener('click', autoEnableAudio);
+
+        // Option 3: Auto-activate on first scroll
+        window.addEventListener('scroll', autoEnableAudio, { passive: true });
       });
 
       // RANDOM TEXT SPACING EFFECT - Comment out this entire block to disable
