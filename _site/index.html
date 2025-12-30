@@ -408,7 +408,7 @@
       }
 
       function filterCategory(cat) {
-        const rows = document.querySelectorAll('a[data-category]');
+        const rows = document.querySelectorAll('[data-category]');
         rows.forEach(row => {
           if (cat === 'Todos' || row.dataset.category === cat) {
             row.style.display = 'block';
