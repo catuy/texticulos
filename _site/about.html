@@ -64,9 +64,9 @@
       function adjustImageSize(img) {
         if (img.naturalHeight > img.naturalWidth) {
           img.classList.add('h-screen', 'w-auto');
-          img.classList.remove('w-2/3', 'max-w-[817px]', 'max-h-[50vh]');
+          img.classList.remove('w-2/3', 'h-auto');
         } else {
-          img.classList.add('w-2/3', 'h-auto', 'max-w-[817px]', 'max-h-[50vh]');
+          img.classList.add('w-2/3', 'h-auto');
           img.classList.remove('h-screen', 'w-auto');
         }
       }
