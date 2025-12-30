@@ -114,21 +114,21 @@
       function enableAudio() {
         if (audioEnabled) return;
 
-        // Update icon to loading state
+        // Update text to loading state
         const icon = document.getElementById('audio-toggle');
-        icon.textContent = '⏳';
+        icon.textContent = 'cargando...';
 
         Tone.start().then(() => {
           audioEnabled = true;
           initPiano();
-          // Change to enabled speaker icon
-          icon.textContent = '🔊';
+          // Change to enabled text
+          icon.textContent = 'sonido on';
           icon.title = 'Piano Enabled';
           icon.style.opacity = '1';
           console.log('Audio enabled!');
         }).catch(err => {
           console.error('Failed to start audio:', err);
-          icon.textContent = '❌';
+          icon.textContent = 'error';
           icon.title = 'Audio Failed';
         });
       }
