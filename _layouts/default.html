@@ -21,7 +21,7 @@
   </head>
   <body class="bg-[#f8f9fe] min-h-screen w-full">
     {%- include header.html -%}
-    <main class="px-[27px] pt-[52px]">
+    <main class="px-[27px]">
         {{ content }}
     </main>
     {%- include footer.html -%}
@@ -29,7 +29,7 @@
       function adjustImageSize(img) {
         if (img.naturalHeight > img.naturalWidth) {
           img.classList.add('h-screen', 'w-auto');
-          img.classList.remove('w-2/3', 'h-auto');
+          img.classList.remove('w-66%', 'h-auto');
         } else {
           img.classList.add('w-2/3', 'h-auto');
           img.classList.remove('h-screen', 'w-auto');

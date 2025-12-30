@@ -1,12 +1,12 @@
 <header class="relative px-[27px] py-[21px]">
-    <div class="flex gap-[69px] items-center">
+    <div class="grid grid-cols-3">
         <!-- Logo -->
-        <div class="flex-1 min-w-0">
+        <div>
             <p class="text-[14px] text-black">(textículos)</p>
         </div>
 
         <!-- Navigation Menu -->
-        <nav class="flex-1 min-w-0">
+        <nav>
             <div class="flex gap-[8px] justify-center items-center text-[14px] text-black">
                 <a href="{{ "/" | relative_url }}" class="line-through">Todos</a>
                 <a href="?category=Libros">Libros</a>
@@ -20,7 +20,7 @@
         </nav>
 
         <!-- Info link -->
-        <div class="flex-1 min-w-0 text-right">
+        <div class="text-right">
             <a href="{{ "/about" | relative_url }}" class="text-[14px] text-black line-through">Info</a>
         </div>
     </div>

@@ -29,14 +29,14 @@
         }
     </style><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Your awesome title" /></head>
   <body class="bg-[#f8f9fe] min-h-screen w-full"><header class="relative px-[27px] py-[21px]">
-    <div class="flex gap-[69px] items-center">
+    <div class="grid grid-cols-3">
         <!-- Logo -->
-        <div class="flex-1 min-w-0">
+        <div>
             <p class="text-[14px] text-black">(textículos)</p>
         </div>
 
         <!-- Navigation Menu -->
-        <nav class="flex-1 min-w-0">
+        <nav>
             <div class="flex gap-[8px] justify-center items-center text-[14px] text-black">
                 <a href="/" class="line-through">Todos</a>
                 <a href="?category=Libros">Libros</a>
@@ -50,27 +50,27 @@
         </nav>
 
         <!-- Info link -->
-        <div class="flex-1 min-w-0 text-right">
+        <div class="text-right">
             <a href="/about" class="text-[14px] text-black line-through">Info</a>
         </div>
     </div>
 </header>
-<main class="px-[27px] pt-[52px]">
+<main class="px-[27px]">
         <div class="flex flex-col gap-[7px] w-full">
   
-    <div class="flex items-center text-[14px] text-black relative group">
-      <p class="flex-1 min-w-0"><a href="/projects/project1/">Menos los viernes</a></p>
-      <p class="flex-1 min-w-0">Libros</p>
-      <p class="flex-1 min-w-0 text-right">2022</p>
+    <div class="grid grid-cols-3 text-[14px] text-black relative group">
+      <p><a href="/projects/project1/">Menos los viernes</a></p>
+      <p>Libros</p>
+      <p class="text-right">2022</p>
       
         <img src="https://picsum.photos/600/400?random=1" alt="" onload="adjustImageSize(this)" class="fixed bottom-0 right-0 object-contain opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10">
       
     </div>
   
-    <div class="flex items-center text-[14px] text-black relative group">
-      <p class="flex-1 min-w-0"><a href="/projects/project2/">Dié y uno má</a></p>
-      <p class="flex-1 min-w-0">Libros</p>
-      <p class="flex-1 min-w-0 text-right">2021</p>
+    <div class="grid grid-cols-3 text-[14px] text-black relative group">
+      <p><a href="/projects/project2/">Dié y uno má</a></p>
+      <p>Libros</p>
+      <p class="text-right">2021</p>
       
         <img src="https://picsum.photos/400/600?random=2" alt="" onload="adjustImageSize(this)" class="fixed bottom-0 right-0 object-contain opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10">
       
@@ -85,7 +85,7 @@
       function adjustImageSize(img) {
         if (img.naturalHeight > img.naturalWidth) {
           img.classList.add('h-screen', 'w-auto');
-          img.classList.remove('w-2/3', 'h-auto');
+          img.classList.remove('w-66%', 'h-auto');
         } else {
           img.classList.add('w-2/3', 'h-auto');
           img.classList.remove('h-screen', 'w-auto');
