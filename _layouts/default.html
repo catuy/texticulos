@@ -29,11 +29,27 @@
       function adjustImageSize(img) {
         if (img.naturalHeight > img.naturalWidth) {
           img.classList.add('h-screen', 'w-auto');
-          img.classList.remove('w-66%', 'h-auto');
+          img.classList.remove('w-2/3', 'h-auto');
         } else {
           img.classList.add('w-2/3', 'h-auto');
           img.classList.remove('h-screen', 'w-auto');
         }
+      }
+
+      function filterCategory(cat) {
+        const rows = document.querySelectorAll('[data-category]');
+        rows.forEach(row => {
+          if (cat === 'Todos' || row.dataset.category === cat) {
+            row.style.display = 'block';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+        // Update active link
+        document.querySelectorAll('.category-link').forEach(link => {
+          link.classList.remove('line-through');
+        });
+        event.target.classList.add('line-through');
       }
     </script>
   </body>
