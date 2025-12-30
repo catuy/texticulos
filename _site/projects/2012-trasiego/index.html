@@ -14,11 +14,11 @@
 <meta property="og:url" content="http://localhost:4000/projects/2012-trasiego/" />
 <meta property="og:site_name" content="Your awesome title" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2025-12-30T02:20:31-03:00" />
+<meta property="article:published_time" content="2025-12-30T02:21:47-03:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Trasiego" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2025-12-30T02:20:31-03:00","datePublished":"2025-12-30T02:20:31-03:00","description":"Trasiego (poesía, Yaugurú, 2012)","headline":"Trasiego","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/projects/2012-trasiego/"},"url":"http://localhost:4000/projects/2012-trasiego/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2025-12-30T02:21:47-03:00","datePublished":"2025-12-30T02:21:47-03:00","description":"Trasiego (poesía, Yaugurú, 2012)","headline":"Trasiego","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/projects/2012-trasiego/"},"url":"http://localhost:4000/projects/2012-trasiego/"}</script>
 <!-- End Jekyll SEO tag -->
 <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://tonejs.github.io/build/Tone.js"></script>
@@ -206,6 +206,7 @@
 
         // Auto-activate audio on first user interaction
         let audioAutoActivated = false;
+        let initialScrollY = window.scrollY;
 
         function autoEnableAudio() {
           if (!audioEnabled && !audioAutoActivated) {
@@ -218,11 +219,21 @@
           }
         }
 
-        // Option 1: Auto-activate on first click anywhere
-        document.addEventListener('click', autoEnableAudio);
+        // Option 1: Auto-activate on first click anywhere (excluding the toggle button)
+        document.addEventListener('click', function(e) {
+          // Don't auto-activate if clicking the audio toggle button
+          if (e.target.id !== 'audio-toggle') {
+            autoEnableAudio();
+          }
+        });
 
-        // Option 3: Auto-activate on first scroll
-        window.addEventListener('scroll', autoEnableAudio, { passive: true });
+        // Option 3: Auto-activate on first meaningful scroll
+        window.addEventListener('scroll', function() {
+          // Only activate if scrolled more than 10px from initial position
+          if (Math.abs(window.scrollY - initialScrollY) > 10) {
+            autoEnableAudio();
+          }
+        }, { passive: true });
       });
 
       // RANDOM TEXT SPACING EFFECT - Comment out this entire block to disable
