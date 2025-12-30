@@ -2,6 +2,10 @@
 layout: default
 ---
 
+{% if page.portada %}
+  <img src="{{ page.portada }}" alt="Portada de {{ page.title }}" style="max-width: 100%; height: auto;">
+{% endif %}
+
 <h1>{{ page.title }}</h1>
 <p><strong>Año:</strong> {{ page.year }}</p>
 <p><strong>Categoría:</strong> {{ page.category }}</p>
