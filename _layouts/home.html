@@ -9,7 +9,7 @@ layout: default
       <p class="flex-1 min-w-0">{{ project.category }}</p>
       <p class="flex-1 min-w-0 text-right">{{ project.year }}</p>
       {% if project.portada %}
-        <img src="{{ project.portada }}" alt="" class="fixed bottom-0 right-0 h-auto w-2/3 max-w-[817px] max-h-[50vh] object-contain opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10">
+        <img src="{{ project.portada }}" alt="" onload="adjustImageSize(this)" class="fixed bottom-0 right-0 object-contain opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10">
       {% endif %}
     </div>
   {% endfor %}
