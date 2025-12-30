@@ -4,5 +4,5 @@ title: "(en)AJENA/ACCION"
 year: 1982
 category: "Libros"
 description: "(en)AJENA/ACCION (poesía, Ediciones de Uno, 1982)"
-portada: "assets/images/(en)AJENA-ACCION.webp"
+portada: "assets/images/en-ajena-accion.webp"
 ---
