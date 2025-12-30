@@ -1,0 +1,25 @@
+<header class="relative px-[26px] py-[21px]">
+    <!-- Logo -->
+    <div class="absolute left-[26px] top-[21px]">
+        <p class="text-[14px] text-black">(textículos)</p>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="absolute left-[458px] top-[21px] w-[490px]">
+        <div class="flex gap-[8px] items-center text-[14px] text-black">
+            <a href="{{ "/" | relative_url }}" class="line-through">Todos</a>
+            <a href="?category=Libros">Libros</a>
+            <a href="?category=Antologías">Antologías</a>
+            <a href="?category=Discos">Discos</a>
+            <a href="?category=Videos">Videos</a>
+            <a href="?category=Fotos">Fotos</a>
+            <a href="?category=Imágenes">Imágenes</a>
+            <a href="?category=Poemas Visuales" class="whitespace-nowrap">Poemas Visuales</a>
+        </div>
+    </nav>
+
+    <!-- Info link -->
+    <div class="absolute right-[26px] top-[21px]">
+        <a href="{{ "/about" | relative_url }}" class="text-[14px] text-black line-through">Info</a>
+    </div>
+</header>
