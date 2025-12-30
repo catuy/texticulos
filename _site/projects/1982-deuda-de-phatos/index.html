@@ -14,11 +14,11 @@
 <meta property="og:url" content="http://localhost:4000/projects/1982-deuda-de-phatos/" />
 <meta property="og:site_name" content="Your awesome title" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2025-12-30T02:01:01-03:00" />
+<meta property="article:published_time" content="2025-12-30T02:07:27-03:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Deuda de Phatos" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2025-12-30T02:01:01-03:00","datePublished":"2025-12-30T02:01:01-03:00","description":"Deuda de Phatos (plaqueta de poesía, Ediciones de UNO, 1982)","headline":"Deuda de Phatos","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/projects/1982-deuda-de-phatos/"},"url":"http://localhost:4000/projects/1982-deuda-de-phatos/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2025-12-30T02:07:27-03:00","datePublished":"2025-12-30T02:07:27-03:00","description":"Deuda de Phatos (plaqueta de poesía, Ediciones de UNO, 1982)","headline":"Deuda de Phatos","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/projects/1982-deuda-de-phatos/"},"url":"http://localhost:4000/projects/1982-deuda-de-phatos/"}</script>
 <!-- End Jekyll SEO tag -->
 <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://tonejs.github.io/build/Tone.js"></script>
@@ -35,7 +35,7 @@
     <div class="flex">
         <!-- Logo -->
         <div class="w-1/3">
-            <p class="text-[14px] px-[21px] text-black">T E X T Í C U L O S / G u s t a v o W o j c i e cho ws ki (Maca)</p>
+            <p class="text-[14px] px-[21px] text-black">T E X T Í C U L O S / Gustavo Wojciechowski (Maca)</p>
         </div>
 
         <!-- Navigation Menu -->
@@ -196,6 +196,77 @@
           link.addEventListener('mouseenter', playRandomPianoNote);
         });
       });
+
+      // RANDOM TEXT SPACING EFFECT - Comment out this entire block to disable
+      /*
+      function addRandomSpacesToText() {
+        // Configuration - adjust these values
+        const maxSpacesPerWord = 3; // Maximum spaces to insert per word
+        const spaceProbability = 0.3; // Probability (0-1) of inserting a space between characters
+
+        function processTextNode(node) {
+          if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+            // Skip if parent is one of these tags
+            const parentTag = node.parentNode.tagName;
+            if (['SCRIPT', 'STYLE', 'NOSCRIPT', 'TITLE'].includes(parentTag)) {
+              return;
+            }
+
+            const originalText = node.textContent;
+            let newText = '';
+
+            // Process each word separately
+            const words = originalText.split(/(\s+)/);
+
+            for (let word of words) {
+              if (word.trim()) { // Only process non-whitespace
+                let spacedWord = '';
+
+                for (let i = 0; i < word.length; i++) {
+                  spacedWord += word[i];
+
+                  // Add random spaces between characters (but not at the end)
+                  if (i < word.length - 1 && Math.random() < spaceProbability) {
+                    const numSpaces = Math.floor(Math.random() * maxSpacesPerWord) + 1;
+                    spacedWord += ' '.repeat(numSpaces);
+                  }
+                }
+
+                newText += spacedWord;
+              } else {
+                newText += word; // Preserve whitespace
+              }
+            }
+
+            node.textContent = newText;
+          }
+        }
+
+        function walkTextNodes(node) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            processTextNode(node);
+          } else if (node.nodeType === Node.ELEMENT_NODE) {
+            // Skip certain elements
+            const tagName = node.tagName;
+            if (!['SCRIPT', 'STYLE', 'NOSCRIPT', 'IFRAME', 'OBJECT', 'EMBED'].includes(tagName)) {
+              for (let child of node.childNodes) {
+                walkTextNodes(child);
+              }
+            }
+          }
+        }
+
+        // Apply to entire document
+        walkTextNodes(document.body);
+      }
+
+      // Apply the effect after page loads
+      document.addEventListener('DOMContentLoaded', function() {
+        // Small delay to ensure all content is loaded
+        setTimeout(addRandomSpacesToText, 100);
+      });
+      */
+      // END RANDOM TEXT SPACING EFFECT
 
     </script>
   </body>
