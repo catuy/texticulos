@@ -14,11 +14,11 @@
 <meta property="og:url" content="http://localhost:4000/projects/2002-tipografia-poemas-polacos/" />
 <meta property="og:site_name" content="Your awesome title" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2025-12-30T02:15:28-03:00" />
+<meta property="article:published_time" content="2025-12-30T02:17:24-03:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="TIPOGRAFÍA, poemas&amp;polacos" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2025-12-30T02:15:28-03:00","datePublished":"2025-12-30T02:15:28-03:00","description":"TIPOGRAFÍA, poemas&amp;polacos (poesía, Ed. Argonauta, Buenos Aires, 2002, 2005; Wolkowicz Editores, 2010)","headline":"TIPOGRAFÍA, poemas&amp;polacos","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/projects/2002-tipografia-poemas-polacos/"},"url":"http://localhost:4000/projects/2002-tipografia-poemas-polacos/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2025-12-30T02:17:24-03:00","datePublished":"2025-12-30T02:17:24-03:00","description":"TIPOGRAFÍA, poemas&amp;polacos (poesía, Ed. Argonauta, Buenos Aires, 2002, 2005; Wolkowicz Editores, 2010)","headline":"TIPOGRAFÍA, poemas&amp;polacos","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/projects/2002-tipografia-poemas-polacos/"},"url":"http://localhost:4000/projects/2002-tipografia-poemas-polacos/"}</script>
 <!-- End Jekyll SEO tag -->
 <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://tonejs.github.io/build/Tone.js"></script>
@@ -162,33 +162,41 @@
         piano.triggerAttackRelease(randomNote, '8n');
       }
 
-      function enableAudio() {
-        if (audioEnabled) return;
-
-        // Update text to loading state
+      function toggleAudio() {
         const icon = document.getElementById('audio-toggle');
-        icon.textContent = 'cargando...';
 
-        Tone.start().then(() => {
-          audioEnabled = true;
-          initPiano();
-          // Change to enabled text
-          icon.textContent = 'sonido on';
-          icon.title = 'Piano Enabled';
-          icon.style.opacity = '1';
-          console.log('Audio enabled!');
-        }).catch(err => {
-          console.error('Failed to start audio:', err);
-          icon.textContent = 'error';
-          icon.title = 'Audio Failed';
-        });
+        if (audioEnabled) {
+          // Disable audio
+          audioEnabled = false;
+          icon.textContent = 'sonido off';
+          icon.title = 'Click to enable audio';
+          icon.style.opacity = '0.6';
+          console.log('Audio disabled!');
+        } else {
+          // Enable audio
+          icon.textContent = 'cargando...';
+
+          Tone.start().then(() => {
+            audioEnabled = true;
+            initPiano();
+            // Change to enabled text
+            icon.textContent = 'sonido on';
+            icon.title = 'Click to disable audio';
+            icon.style.opacity = '1';
+            console.log('Audio enabled!');
+          }).catch(err => {
+            console.error('Failed to start audio:', err);
+            icon.textContent = 'error';
+            icon.title = 'Audio Failed';
+          });
+        }
       }
 
       // Add event listeners
       document.addEventListener('DOMContentLoaded', function() {
         // Enable audio icon
         const audioIcon = document.getElementById('audio-toggle');
-        audioIcon.addEventListener('click', enableAudio);
+        audioIcon.addEventListener('click', toggleAudio);
 
         // Add hover sound to clickable projects
         const projectLinks = document.querySelectorAll('a[data-category]');

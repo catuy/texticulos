@@ -111,33 +111,41 @@
         piano.triggerAttackRelease(randomNote, '8n');
       }
 
-      function enableAudio() {
-        if (audioEnabled) return;
-
-        // Update text to loading state
+      function toggleAudio() {
         const icon = document.getElementById('audio-toggle');
-        icon.textContent = 'cargando...';
 
-        Tone.start().then(() => {
-          audioEnabled = true;
-          initPiano();
-          // Change to enabled text
-          icon.textContent = 'sonido on';
-          icon.title = 'Piano Enabled';
-          icon.style.opacity = '1';
-          console.log('Audio enabled!');
-        }).catch(err => {
-          console.error('Failed to start audio:', err);
-          icon.textContent = 'error';
-          icon.title = 'Audio Failed';
-        });
+        if (audioEnabled) {
+          // Disable audio
+          audioEnabled = false;
+          icon.textContent = 'sonido off';
+          icon.title = 'Click to enable audio';
+          icon.style.opacity = '0.6';
+          console.log('Audio disabled!');
+        } else {
+          // Enable audio
+          icon.textContent = 'cargando...';
+
+          Tone.start().then(() => {
+            audioEnabled = true;
+            initPiano();
+            // Change to enabled text
+            icon.textContent = 'sonido on';
+            icon.title = 'Click to disable audio';
+            icon.style.opacity = '1';
+            console.log('Audio enabled!');
+          }).catch(err => {
+            console.error('Failed to start audio:', err);
+            icon.textContent = 'error';
+            icon.title = 'Audio Failed';
+          });
+        }
       }
 
       // Add event listeners
       document.addEventListener('DOMContentLoaded', function() {
         // Enable audio icon
         const audioIcon = document.getElementById('audio-toggle');
-        audioIcon.addEventListener('click', enableAudio);
+        audioIcon.addEventListener('click', toggleAudio);
 
         // Add hover sound to clickable projects
         const projectLinks = document.querySelectorAll('a[data-category]');
