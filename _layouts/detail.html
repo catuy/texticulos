@@ -3,7 +3,14 @@ layout: default
 ---
 
 {% if page.portada %}
-  <img src="{{ page.portada | relative_url }}" alt="Portada de {{ page.title }}" onload="adjustImageSize(this)" class="fixed bottom-0 right-0 object-contain -z-10">
+  {% if page.category == "Video" %}
+    <video controls class="fixed bottom-0 right-0 object-contain -z-10" style="max-width: 50%; max-height: 50%;">
+      <source src="{{ page.portada | replace: '_frame.webp', '.mp4' | relative_url }}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  {% else %}
+    <img src="{{ page.portada | relative_url }}" alt="Portada de {{ page.title }}" onload="adjustImageSize(this)" class="fixed bottom-0 right-0 object-contain -z-10">
+  {% endif %}
 {% endif %}
 
 <h1>{{ page.title }}</h1>
