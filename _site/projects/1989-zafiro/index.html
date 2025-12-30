@@ -14,11 +14,11 @@
 <meta property="og:url" content="http://localhost:4000/projects/1989-zafiro/" />
 <meta property="og:site_name" content="Your awesome title" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2025-12-30T01:53:34-03:00" />
+<meta property="article:published_time" content="2025-12-30T02:01:01-03:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Zafiro" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2025-12-30T01:53:34-03:00","datePublished":"2025-12-30T01:53:34-03:00","description":"Zafiro (yo sólo quería ser el cantante de una banda de rock and roll) (novela, Ediciones de UNO, 1989; Estuario 2011)","headline":"Zafiro","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/projects/1989-zafiro/"},"url":"http://localhost:4000/projects/1989-zafiro/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2025-12-30T02:01:01-03:00","datePublished":"2025-12-30T02:01:01-03:00","description":"Zafiro (yo sólo quería ser el cantante de una banda de rock and roll) (novela, Ediciones de UNO, 1989; Estuario 2011)","headline":"Zafiro","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/projects/1989-zafiro/"},"url":"http://localhost:4000/projects/1989-zafiro/"}</script>
 <!-- End Jekyll SEO tag -->
 <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://tonejs.github.io/build/Tone.js"></script>
@@ -35,7 +35,7 @@
     <div class="flex">
         <!-- Logo -->
         <div class="w-1/3">
-            <p class="text-[14px] px-[21px] text-black">T E X T Í C U L O S / G u s t a v o W o j c i e c h o w s k i ( M a c a )</p>
+            <p class="text-[14px] px-[21px] text-black">T E X T Í C U L O S / G u s t a v o W o j c i e cho ws ki (Maca)</p>
         </div>
 
         <!-- Navigation Menu -->
@@ -54,16 +54,15 @@
         </nav>
 
         <!-- Info link -->
-        <div class="w-1/3 text-right px-[21px]">
+        <div class="w-1/3 text-right px-[21px] flex items-center justify-end gap-4">
+            <div id="audio-toggle" class="cursor-pointer text-black text-[16px] opacity-60 hover:opacity-100 transition-opacity" title="Enable Piano">
+                🔇
+            </div>
             <a href="/about" class="text-[14px] text-black line-through">Info</a>
         </div>
     </div>
 </header>
-<!-- Audio enable button -->
-    <div id="audio-enable" class="fixed bottom-4 right-4 bg-black text-white px-4 py-2 rounded cursor-pointer z-50 opacity-75 hover:opacity-100 transition-opacity">
-      🎹 Enable Piano
-    </div>
-    <main class="px-0">
+<main class="px-0">
         
   <img src="https://picsum.photos/600/400?random=30" alt="Portada de Zafiro" onload="adjustImageSize(this)" class="fixed bottom-0 right-0 object-contain -z-10">
 
@@ -109,8 +108,11 @@
       // Piano setup
       let piano;
       let audioEnabled = false;
+      let pianoLoaded = false;
 
       function initPiano() {
+        if (pianoLoaded) return;
+
         piano = new Tone.Sampler({
           urls: {
             A0: "A0.mp3",
@@ -146,13 +148,14 @@
           },
           baseUrl: "https://tonejs.github.io/audio/salamander/",
           onload: () => {
+            pianoLoaded = true;
             console.log('Piano samples loaded');
           }
         }).toDestination();
       }
 
       function playRandomPianoNote() {
-        if (!audioEnabled) return;
+        if (!audioEnabled || !pianoLoaded) return;
 
         const pianoNotes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5', 'A5'];
         const randomNote = pianoNotes[Math.floor(Math.random() * pianoNotes.length)];
@@ -162,21 +165,30 @@
       function enableAudio() {
         if (audioEnabled) return;
 
+        // Update icon to loading state
+        const icon = document.getElementById('audio-toggle');
+        icon.textContent = '⏳';
+
         Tone.start().then(() => {
           audioEnabled = true;
           initPiano();
-          // Hide the enable button
-          const button = document.getElementById('audio-enable');
-          button.style.display = 'none';
+          // Change to enabled speaker icon
+          icon.textContent = '🔊';
+          icon.title = 'Piano Enabled';
+          icon.style.opacity = '1';
           console.log('Audio enabled!');
+        }).catch(err => {
+          console.error('Failed to start audio:', err);
+          icon.textContent = '❌';
+          icon.title = 'Audio Failed';
         });
       }
 
       // Add event listeners
       document.addEventListener('DOMContentLoaded', function() {
-        // Enable audio button
-        const audioButton = document.getElementById('audio-enable');
-        audioButton.addEventListener('click', enableAudio);
+        // Enable audio icon
+        const audioIcon = document.getElementById('audio-toggle');
+        audioIcon.addEventListener('click', enableAudio);
 
         // Add hover sound to clickable projects
         const projectLinks = document.querySelectorAll('a[data-category]');

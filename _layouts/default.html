@@ -23,10 +23,6 @@
   </head>
   <body class="bg-[#f8f9fe] min-h-screen w-full">
     {%- include header.html -%}
-    <!-- Audio enable button -->
-    <div id="audio-enable" class="fixed bottom-4 right-4 bg-black text-white px-4 py-2 rounded cursor-pointer z-50 opacity-75 hover:opacity-100 transition-opacity">
-      🎹 Enable Piano
-    </div>
     <main class="px-0">
         {{ content }}
     </main>
@@ -61,8 +57,11 @@
       // Piano setup
       let piano;
       let audioEnabled = false;
+      let pianoLoaded = false;
 
       function initPiano() {
+        if (pianoLoaded) return;
+
         piano = new Tone.Sampler({
           urls: {
             A0: "A0.mp3",
@@ -98,13 +97,14 @@
           },
           baseUrl: "https://tonejs.github.io/audio/salamander/",
           onload: () => {
+            pianoLoaded = true;
             console.log('Piano samples loaded');
           }
         }).toDestination();
       }
 
       function playRandomPianoNote() {
-        if (!audioEnabled) return;
+        if (!audioEnabled || !pianoLoaded) return;
 
         const pianoNotes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5', 'A5'];
         const randomNote = pianoNotes[Math.floor(Math.random() * pianoNotes.length)];
@@ -114,21 +114,30 @@
       function enableAudio() {
         if (audioEnabled) return;
 
+        // Update icon to loading state
+        const icon = document.getElementById('audio-toggle');
+        icon.textContent = '⏳';
+
         Tone.start().then(() => {
           audioEnabled = true;
           initPiano();
-          // Hide the enable button
-          const button = document.getElementById('audio-enable');
-          button.style.display = 'none';
+          // Change to enabled speaker icon
+          icon.textContent = '🔊';
+          icon.title = 'Piano Enabled';
+          icon.style.opacity = '1';
           console.log('Audio enabled!');
+        }).catch(err => {
+          console.error('Failed to start audio:', err);
+          icon.textContent = '❌';
+          icon.title = 'Audio Failed';
         });
       }
 
       // Add event listeners
       document.addEventListener('DOMContentLoaded', function() {
-        // Enable audio button
-        const audioButton = document.getElementById('audio-enable');
-        audioButton.addEventListener('click', enableAudio);
+        // Enable audio icon
+        const audioIcon = document.getElementById('audio-toggle');
+        audioIcon.addEventListener('click', enableAudio);
 
         // Add hover sound to clickable projects
         const projectLinks = document.querySelectorAll('a[data-category]');
