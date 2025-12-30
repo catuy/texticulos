@@ -7,7 +7,7 @@
 
         <!-- Navigation Menu -->
         <nav class="w-1/3">
-            <div class="flex flex-wrap gap-[8px] justify-center items-center text-[14px] text-black">
+            <div class="flex flex-wrap gap-[16px] text-[14px] text-black">
                 <a href="#" onclick="filterCategory('Todos')" class="category-link line-through">Todos</a>
                 {% assign categories = site.projects | map: 'category' | uniq | sort %}
                 {% for cat in categories %}
