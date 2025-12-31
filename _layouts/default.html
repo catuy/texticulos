@@ -61,18 +61,36 @@
 
       // Load audio preference from localStorage
       function loadAudioPreference() {
-        const saved = localStorage.getItem('texticulos-audio-enabled');
-        return saved === 'true';
+        try {
+          const saved = localStorage.getItem('texticulos-audio-enabled');
+          console.log('Loading audio preference:', saved);
+          return saved === 'true';
+        } catch (e) {
+          console.error('Error loading audio preference:', e);
+          return false;
+        }
       }
 
       // Check if audio preference was ever set
       function hasAudioPreference() {
-        return localStorage.getItem('texticulos-audio-enabled') !== null;
+        try {
+          const exists = localStorage.getItem('texticulos-audio-enabled') !== null;
+          console.log('Has audio preference:', exists);
+          return exists;
+        } catch (e) {
+          console.error('Error checking audio preference:', e);
+          return false;
+        }
       }
 
       // Save audio preference to localStorage
       function saveAudioPreference(enabled) {
-        localStorage.setItem('texticulos-audio-enabled', enabled.toString());
+        try {
+          localStorage.setItem('texticulos-audio-enabled', enabled.toString());
+          console.log('Saved audio preference:', enabled);
+        } catch (e) {
+          console.error('Error saving audio preference:', e);
+        }
       }
 
       function initPiano() {
