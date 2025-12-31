@@ -331,13 +331,30 @@
               const parser = new DOMParser();
               const doc = parser.parseFromString(html, 'text/html');
               
-              // Extract new main content
-              const newMain = doc.querySelector('main');
-              const currentMain = document.querySelector('main');
+              // Check if the new page uses detail layout (has custom header)
+              const newBody = doc.querySelector('body');
+              const hasCustomHeader = doc.querySelector('body > div.relative');
               
-              if (newMain && currentMain) {
-                // Replace main content
-                currentMain.innerHTML = newMain.innerHTML;
+              if (hasCustomHeader) {
+                // Detail page: replace entire body content
+                const currentBody = document.querySelector('body');
+                
+                // Preserve the scripts from current page (Tone.js, etc.)
+                const scriptsToKeep = Array.from(currentBody.querySelectorAll('script'))
+                  .filter(script => 
+                    script.src.includes('tailwindcss') || 
+                    script.src.includes('Tone.js')
+                  );
+                
+                // Replace body content
+                currentBody.innerHTML = newBody.innerHTML;
+                
+                // Re-add preserved scripts to head
+                scriptsToKeep.forEach(script => {
+                  if (!document.querySelector(`script[src="${script.src}"]`)) {
+                    document.head.appendChild(script.cloneNode(true));
+                  }
+                });
                 
                 // Update page title
                 const newTitle = doc.querySelector('title');
@@ -348,8 +365,38 @@
                 // Scroll to top
                 window.scrollTo(0, 0);
                 
-                // Reinitialize events for new content
+                // Re-execute page scripts (adjustImageSize, video handlers, etc.)
+                const pageScripts = newBody.querySelectorAll('script:not([src])');
+                pageScripts.forEach(script => {
+                  const newScript = document.createElement('script');
+                  newScript.textContent = script.textContent;
+                  document.body.appendChild(newScript);
+                });
+                
+                // Reinitialize events
                 reinitializePageEvents();
+                
+              } else {
+                // Standard page: replace just main content
+                const newMain = doc.querySelector('main');
+                const currentMain = document.querySelector('main');
+                
+                if (newMain && currentMain) {
+                  // Replace main content
+                  currentMain.innerHTML = newMain.innerHTML;
+                  
+                  // Update page title
+                  const newTitle = doc.querySelector('title');
+                  if (newTitle) {
+                    document.title = newTitle.textContent;
+                  }
+                  
+                  // Scroll to top
+                  window.scrollTo(0, 0);
+                  
+                  // Reinitialize events for new content
+                  reinitializePageEvents();
+                }
               }
             })
             .catch(error => {
