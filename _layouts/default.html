@@ -38,7 +38,7 @@
         }
       }
 
-      function filterCategory(cat) {
+      function filterCategory(cat, element) {
         const rows = document.querySelectorAll('[data-category]');
         rows.forEach(row => {
           if (cat === 'Todos' || row.dataset.category === cat) {
@@ -51,7 +51,9 @@
         document.querySelectorAll('.category-link').forEach(link => {
           link.classList.remove('line-through');
         });
-        event.target.classList.add('line-through');
+        if (element) {
+          element.classList.add('line-through');
+        }
       }
 
       // Piano setup with localStorage persistence

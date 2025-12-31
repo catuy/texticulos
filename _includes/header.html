@@ -8,10 +8,10 @@
         <!-- Navigation Menu -->
         <nav class="w-1/3">
             <div class="flex flex-wrap gap-[16px] text-[16px] text-black">
-                <a href="#" onclick="filterCategory('Todos')" class="category-link line-through">Todos</a>
+                <a href="#" onclick="filterCategory('Todos', this); return false;" class="category-link line-through">Todos</a>
                 {% assign categories = site.projects | map: 'category' | uniq | sort %}
                 {% for cat in categories %}
-                  <a href="#" onclick="filterCategory('{{ cat }}')" class="category-link">{{ cat }}</a>
+                  <a href="#" onclick="filterCategory('{{ cat }}', this); return false;" class="category-link">{{ cat }}</a>
                 {% endfor %}
             </div>
         </nav>
