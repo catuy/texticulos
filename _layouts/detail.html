@@ -68,23 +68,40 @@
       document.addEventListener('DOMContentLoaded', function() {
         const video = document.querySelector('video');
         if (video) {
-          // Handle video aspect ratio and sizing
-          video.addEventListener('loadedmetadata', function() {
-            console.log('Video loaded:', video.videoWidth, 'x', video.videoHeight);
+          // Function to apply sizing based on video dimensions
+          function applyVideoSizing() {
+            if (video.videoWidth && video.videoHeight) {
+              console.log('Video loaded:', video.videoWidth, 'x', video.videoHeight);
 
-            // Apply same sizing logic as images
-            if (video.videoHeight > video.videoWidth) {
-              // Portrait video: full height like portrait images
-              video.classList.add('h-screen', 'w-auto');
-              video.classList.remove('w-2/3', 'h-auto');
-              console.log('Applied portrait sizing: h-screen w-auto');
-            } else {
-              // Landscape video: 2/3 width like landscape images
-              video.classList.add('w-2/3', 'h-auto');
-              video.classList.remove('h-screen', 'w-auto');
-              console.log('Applied landscape sizing: w-2/3 h-auto');
+              // Apply same sizing logic as images
+              if (video.videoHeight > video.videoWidth) {
+                // Portrait video: full height like portrait images
+                video.classList.add('h-screen', 'w-auto');
+                video.classList.remove('w-2/3', 'h-auto');
+                console.log('Applied portrait sizing: h-screen w-auto');
+              } else {
+                // Landscape video: 2/3 width like landscape images
+                video.classList.add('w-2/3', 'h-auto');
+                video.classList.remove('h-screen', 'w-auto');
+                console.log('Applied landscape sizing: w-2/3 h-auto');
+              }
+              return true;
             }
-          });
+            return false;
+          }
+
+          // Try to apply sizing immediately if metadata is already loaded
+          if (!applyVideoSizing()) {
+            // If not loaded yet, wait for metadata
+            video.addEventListener('loadedmetadata', applyVideoSizing);
+            
+            // Also try after a short delay (fallback for SPA navigation)
+            setTimeout(function() {
+              if (video.videoWidth && video.videoHeight) {
+                applyVideoSizing();
+              }
+            }, 100);
+          }
 
           // Handle potential playback issues
           video.addEventListener('error', function(e) {
