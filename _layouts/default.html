@@ -54,11 +54,28 @@
         event.target.classList.add('line-through');
       }
 
-      // Piano setup - Audio ALWAYS ON by default
+      // Piano setup with localStorage persistence
       let piano;
-      let audioEnabled = false; // Will be set to true on first interaction
+      let audioEnabled = false;
       let pianoLoaded = false;
-      let audioActivated = false;
+      let audioContext = null;
+
+      // localStorage helpers
+      function getAudioPreference() {
+        try {
+          return localStorage.getItem('texticulos-audio') === 'enabled';
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function saveAudioPreference(enabled) {
+        try {
+          localStorage.setItem('texticulos-audio', enabled ? 'enabled' : 'disabled');
+        } catch (e) {
+          console.error('Could not save audio preference');
+        }
+      }
 
       function initPiano() {
         if (pianoLoaded) return;
@@ -111,68 +128,85 @@
         piano.triggerAttackRelease(randomNote, '8n');
       }
 
-      // Auto-activate audio on first user interaction
-      // Note: Chrome only allows audio on REAL user gestures (click, keydown, touchstart)
-      // mousemove and scroll are NOT considered valid gestures by browsers
-      let isActivating = false;
-      
-      function removeAudioListeners() {
-        document.removeEventListener('click', tryActivateAudio, true);
-        document.removeEventListener('keydown', tryActivateAudio, true);
-        document.removeEventListener('touchstart', tryActivateAudio, true);
-      }
-      
-      function tryActivateAudio(e) {
-        // Prevent multiple simultaneous activation attempts
-        if (audioActivated || isActivating) return;
+      // Auto-activate audio if user previously enabled it
+      function tryActivateAudio() {
+        // Only auto-activate if user previously enabled audio
+        if (!getAudioPreference() || audioEnabled || audioContext) return;
         
-        isActivating = true;
+        audioContext = true; // Mark as attempting
 
         Tone.start().then(() => {
           audioEnabled = true;
-          audioActivated = true;
           initPiano();
-          // Remove all listeners after successful activation
-          removeAudioListeners();
+          updateAudioUI();
         }).catch(() => {
-          // Reset flag on failure so it can retry
-          isActivating = false;
+          audioContext = null; // Reset on failure to retry
         });
       }
 
-      function toggleAudio() {
+      function updateAudioUI() {
         const icon = document.getElementById('audio-toggle');
+        if (!icon) return;
 
         if (audioEnabled) {
-          // Disable audio (only for current session)
-          audioEnabled = false;
+          icon.textContent = 'sonido on';
+          icon.title = 'Click to disable audio';
+          icon.style.opacity = '1';
+        } else {
           icon.textContent = 'sonido off';
           icon.title = 'Click to enable audio';
           icon.style.opacity = '0.6';
+        }
+      }
+
+      function toggleAudio() {
+        if (audioEnabled) {
+          // Disable audio
+          audioEnabled = false;
+          saveAudioPreference(false);
+          updateAudioUI();
         } else {
           // Enable audio
           Tone.start().then(() => {
             audioEnabled = true;
-            audioActivated = true;
+            audioContext = true;
+            saveAudioPreference(true);
             initPiano();
-            icon.textContent = 'sonido on';
-            icon.title = 'Click to disable audio';
-            icon.style.opacity = '1';
+            updateAudioUI();
           }).catch(() => {
-            icon.textContent = 'error';
-            icon.title = 'Audio Failed';
+            const icon = document.getElementById('audio-toggle');
+            if (icon) {
+              icon.textContent = 'error';
+              icon.title = 'Audio failed to start';
+            }
           });
         }
       }
 
-      // Add event listeners
+      // Initialize on page load
       document.addEventListener('DOMContentLoaded', function() {
-        // Set UI to always show "sonido on" by default
         const audioIcon = document.getElementById('audio-toggle');
-        audioIcon.textContent = 'sonido on';
-        audioIcon.title = 'Click to disable audio';
-        audioIcon.style.opacity = '1';
-        audioIcon.addEventListener('click', toggleAudio);
+        
+        // Set initial UI based on saved preference
+        const audioWasEnabled = getAudioPreference();
+        if (audioWasEnabled) {
+          if (audioIcon) {
+            audioIcon.textContent = 'sonido on';
+            audioIcon.title = 'Click to disable audio';
+            audioIcon.style.opacity = '1';
+          }
+        } else {
+          if (audioIcon) {
+            audioIcon.textContent = 'sonido off';
+            audioIcon.title = 'Click to enable audio';
+            audioIcon.style.opacity = '0.6';
+          }
+        }
+
+        // Attach toggle handler
+        if (audioIcon) {
+          audioIcon.addEventListener('click', toggleAudio);
+        }
 
         // Add hover sound to clickable projects
         const projectLinks = document.querySelectorAll('a[data-category]');
@@ -180,8 +214,8 @@
           link.addEventListener('mouseenter', playRandomPianoNote);
         });
 
-        // Auto-activation: listen ONLY to valid user gestures
-        // Chrome/browsers only allow audio activation on: click, keydown, touchstart
+        // Permanent listeners for auto-activation (don't remove them)
+        // Only activates if user previously enabled audio
         document.addEventListener('click', tryActivateAudio, true);
         document.addEventListener('keydown', tryActivateAudio, true);
         document.addEventListener('touchstart', tryActivateAudio, true);
