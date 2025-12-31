@@ -64,22 +64,48 @@
         }
       }
 
-      // Video sizing - ensure videos get proper dimensions
+      // Video sizing and aspect ratio handling
       document.addEventListener('DOMContentLoaded', function() {
         const video = document.querySelector('video');
         if (video) {
-          // Force video to take 2/3 width like landscape images
-          video.classList.add('w-2/3', 'h-auto');
-          video.classList.remove('h-screen', 'w-auto');
-
-          // Ensure video loads metadata for better playback
+          // Handle video aspect ratio and sizing
           video.addEventListener('loadedmetadata', function() {
             console.log('Video loaded:', video.videoWidth, 'x', video.videoHeight);
+
+            // Apply same sizing logic as images
+            if (video.videoHeight > video.videoWidth) {
+              // Portrait video: full height like portrait images
+              video.classList.add('h-screen', 'w-auto');
+              video.classList.remove('w-2/3', 'h-auto');
+              console.log('Applied portrait sizing: h-screen w-auto');
+            } else {
+              // Landscape video: 2/3 width like landscape images
+              video.classList.add('w-2/3', 'h-auto');
+              video.classList.remove('h-screen', 'w-auto');
+              console.log('Applied landscape sizing: w-2/3 h-auto');
+            }
           });
 
           // Handle potential playback issues
           video.addEventListener('error', function(e) {
             console.error('Video error:', e);
+          });
+
+          // Improve video loading and playback
+          video.addEventListener('loadstart', function() {
+            console.log('Video load started');
+          });
+
+          video.addEventListener('canplay', function() {
+            console.log('Video can play');
+          });
+
+          video.addEventListener('play', function() {
+            console.log('Video started playing');
+          });
+
+          video.addEventListener('pause', function() {
+            console.log('Video paused');
           });
         }
       });
