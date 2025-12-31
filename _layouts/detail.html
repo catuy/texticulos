@@ -95,12 +95,15 @@
             // If not loaded yet, wait for metadata
             video.addEventListener('loadedmetadata', applyVideoSizing);
             
-            // Also try after a short delay (fallback for SPA navigation)
-            setTimeout(function() {
-              if (video.videoWidth && video.videoHeight) {
-                applyVideoSizing();
-              }
-            }, 100);
+            // Multiple fallback attempts for SPA navigation
+            // Try at 50ms, 150ms, 300ms, and 500ms
+            [50, 150, 300, 500].forEach(function(delay) {
+              setTimeout(function() {
+                if (video.videoWidth && video.videoHeight) {
+                  applyVideoSizing();
+                }
+              }, delay);
+            });
           }
 
           // Handle potential playback issues
