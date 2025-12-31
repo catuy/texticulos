@@ -44,7 +44,7 @@
     <!-- Media display -->
     {% if page.portada %}
       {% if page.category == "Video" %}
-        <video controls class="fixed bottom-0 right-0 object-contain -z-10" style="max-width: 50%; max-height: 50%;">
+        <video controls onload="adjustImageSize(this)" class="fixed bottom-0 right-0 object-contain" style="z-index: 1;">
           <source src="{{ page.portada | replace: '_frame.webp', '.mp4' | relative_url }}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
