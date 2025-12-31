@@ -54,44 +54,11 @@
         event.target.classList.add('line-through');
       }
 
-      // Piano setup
+      // Piano setup - Audio ALWAYS ON by default
       let piano;
-      let audioEnabled = false;
+      let audioEnabled = false; // Will be set to true on first interaction
       let pianoLoaded = false;
-
-      // Load audio preference from localStorage
-      function loadAudioPreference() {
-        try {
-          const saved = localStorage.getItem('texticulos-audio-enabled');
-          console.log('Loading audio preference:', saved);
-          return saved === 'true';
-        } catch (e) {
-          console.error('Error loading audio preference:', e);
-          return false;
-        }
-      }
-
-      // Check if audio preference was ever set
-      function hasAudioPreference() {
-        try {
-          const exists = localStorage.getItem('texticulos-audio-enabled') !== null;
-          console.log('Has audio preference:', exists);
-          return exists;
-        } catch (e) {
-          console.error('Error checking audio preference:', e);
-          return false;
-        }
-      }
-
-      // Save audio preference to localStorage
-      function saveAudioPreference(enabled) {
-        try {
-          localStorage.setItem('texticulos-audio-enabled', enabled.toString());
-          console.log('Saved audio preference:', enabled);
-        } catch (e) {
-          console.error('Error saving audio preference:', e);
-        }
-      }
+      let audioActivated = false;
 
       function initPiano() {
         if (pianoLoaded) return;
@@ -132,7 +99,6 @@
           baseUrl: "https://tonejs.github.io/audio/salamander/",
           onload: () => {
             pianoLoaded = true;
-            console.log('Piano samples loaded');
           }
         }).toDestination();
       }
@@ -145,69 +111,58 @@
         piano.triggerAttackRelease(randomNote, '8n');
       }
 
+      // Auto-activate audio on first user interaction (AGGRESSIVE)
+      function tryActivateAudio() {
+        if (audioActivated) return;
+
+        Tone.start().then(() => {
+          audioEnabled = true;
+          audioActivated = true;
+          initPiano();
+          
+          // Remove all listeners after successful activation
+          document.removeEventListener('mousemove', tryActivateAudio);
+          document.removeEventListener('click', tryActivateAudio);
+          document.removeEventListener('scroll', tryActivateAudio);
+          document.removeEventListener('keydown', tryActivateAudio);
+          document.removeEventListener('touchstart', tryActivateAudio);
+        }).catch(() => {
+          // Silently fail, will retry on next interaction
+        });
+      }
+
       function toggleAudio() {
         const icon = document.getElementById('audio-toggle');
 
         if (audioEnabled) {
-          // Disable audio
+          // Disable audio (only for current session)
           audioEnabled = false;
-          saveAudioPreference(false);
           icon.textContent = 'sonido off';
           icon.title = 'Click to enable audio';
           icon.style.opacity = '0.6';
-          console.log('Audio disabled!');
         } else {
           // Enable audio
-          icon.textContent = 'cargando...';
-
           Tone.start().then(() => {
             audioEnabled = true;
-            saveAudioPreference(true);
+            audioActivated = true;
             initPiano();
-            // Change to enabled text
             icon.textContent = 'sonido on';
             icon.title = 'Click to disable audio';
             icon.style.opacity = '1';
-            console.log('Audio enabled!');
-          }).catch(err => {
-            console.error('Failed to start audio:', err);
+          }).catch(() => {
             icon.textContent = 'error';
             icon.title = 'Audio Failed';
           });
         }
       }
 
-      // Initialize audio preference UI on page load (don't start audio automatically)
-      function initializeAudioPreference() {
-        const savedPreference = loadAudioPreference();
-        const audioIcon = document.getElementById('audio-toggle');
-
-        console.log('initializeAudioPreference called, savedPreference:', savedPreference);
-
-        if (savedPreference) {
-          // User previously enabled audio - show as enabled but don't start automatically
-          audioEnabled = false; // Will be set to true when user clicks
-          audioIcon.textContent = 'sonido on';
-          audioIcon.title = 'Click to disable audio';
-          audioIcon.style.opacity = '1';
-          console.log('Audio preference: previously enabled (click to activate)');
-        } else {
-          // User prefers audio off or never set
-          audioEnabled = false;
-          audioIcon.textContent = 'sonido off';
-          audioIcon.title = 'Click to enable audio';
-          audioIcon.style.opacity = '0.6';
-          console.log('Audio preference: disabled');
-        }
-      }
-
       // Add event listeners
       document.addEventListener('DOMContentLoaded', function() {
-        // Initialize audio preference from localStorage
-        initializeAudioPreference();
-
-        // Enable audio icon
+        // Set UI to always show "sonido on" by default
         const audioIcon = document.getElementById('audio-toggle');
+        audioIcon.textContent = 'sonido on';
+        audioIcon.title = 'Click to disable audio';
+        audioIcon.style.opacity = '1';
         audioIcon.addEventListener('click', toggleAudio);
 
         // Add hover sound to clickable projects
@@ -216,52 +171,16 @@
           link.addEventListener('mouseenter', playRandomPianoNote);
         });
 
-        // Auto-activate audio on first user interaction
-        let audioAutoActivated = false;
-        let initialScrollY = window.scrollY;
-        const savedPreference = loadAudioPreference();
+        // AGGRESSIVE auto-activation: listen to MULTIPLE events
+        // Audio will activate on the FIRST of any of these interactions
+        document.addEventListener('mousemove', tryActivateAudio, { once: false });
+        document.addEventListener('click', tryActivateAudio, { once: false });
+        document.addEventListener('scroll', tryActivateAudio, { once: false, passive: true });
+        document.addEventListener('keydown', tryActivateAudio, { once: false });
+        document.addEventListener('touchstart', tryActivateAudio, { once: false });
 
-        function autoEnableAudio() {
-          if (!audioEnabled && !audioAutoActivated) {
-            audioAutoActivated = true;
-            
-            // If user previously enabled audio, activate it now
-            if (savedPreference) {
-              console.log('Auto-activating audio based on saved preference');
-              Tone.start().then(() => {
-                audioEnabled = true;
-                initPiano();
-                console.log('Audio auto-activated successfully!');
-              }).catch(err => {
-                console.error('Failed to auto-activate audio:', err);
-              });
-            } else if (!hasAudioPreference()) {
-              // First-time user - auto-enable audio for them
-              console.log('Auto-activating audio for first-time user');
-              toggleAudio();
-            }
-            
-            // Remove listeners after first activation attempt
-            document.removeEventListener('click', autoEnableAudio);
-            window.removeEventListener('scroll', autoEnableAudio);
-          }
-        }
-
-        // Auto-activate on first click anywhere (excluding the toggle button)
-        document.addEventListener('click', function(e) {
-          // Don't auto-activate if clicking the audio toggle button
-          if (e.target.id !== 'audio-toggle') {
-            autoEnableAudio();
-          }
-        });
-
-        // Auto-activate on first meaningful scroll
-        window.addEventListener('scroll', function() {
-          // Only activate if scrolled more than 10px from initial position
-          if (Math.abs(window.scrollY - initialScrollY) > 10) {
-            autoEnableAudio();
-          }
-        }, { passive: true });
+        // Try to activate immediately (will fail due to browser policy, but worth trying)
+        tryActivateAudio();
       });
 
       // RANDOM TEXT SPACING EFFECT - Comment out this entire block to disable
