@@ -216,23 +216,38 @@
           link.addEventListener('mouseenter', playRandomPianoNote);
         });
 
-        // Auto-activate audio on first user interaction (only if preference was never set)
+        // Auto-activate audio on first user interaction
         let audioAutoActivated = false;
         let initialScrollY = window.scrollY;
+        const savedPreference = loadAudioPreference();
 
         function autoEnableAudio() {
-          if (!audioEnabled && !audioAutoActivated && !hasAudioPreference()) {
+          if (!audioEnabled && !audioAutoActivated) {
             audioAutoActivated = true;
-            console.log('Auto-activating audio for first-time user');
-            // Simulate clicking the toggle button to enable audio
-            toggleAudio();
-            // Remove listeners after first activation
+            
+            // If user previously enabled audio, activate it now
+            if (savedPreference) {
+              console.log('Auto-activating audio based on saved preference');
+              Tone.start().then(() => {
+                audioEnabled = true;
+                initPiano();
+                console.log('Audio auto-activated successfully!');
+              }).catch(err => {
+                console.error('Failed to auto-activate audio:', err);
+              });
+            } else if (!hasAudioPreference()) {
+              // First-time user - auto-enable audio for them
+              console.log('Auto-activating audio for first-time user');
+              toggleAudio();
+            }
+            
+            // Remove listeners after first activation attempt
             document.removeEventListener('click', autoEnableAudio);
             window.removeEventListener('scroll', autoEnableAudio);
           }
         }
 
-        // Option 1: Auto-activate on first click anywhere (excluding the toggle button)
+        // Auto-activate on first click anywhere (excluding the toggle button)
         document.addEventListener('click', function(e) {
           // Don't auto-activate if clicking the audio toggle button
           if (e.target.id !== 'audio-toggle') {
@@ -240,7 +255,7 @@
           }
         });
 
-        // Option 3: Auto-activate on first meaningful scroll
+        // Auto-activate on first meaningful scroll
         window.addEventListener('scroll', function() {
           // Only activate if scrolled more than 10px from initial position
           if (Math.abs(window.scrollY - initialScrollY) > 10) {
