@@ -405,6 +405,9 @@
             // Skip if already has SPA listener
             if (link.hasAttribute('data-spa-attached')) return;
             
+            // Skip links with onclick (category filters)
+            if (link.hasAttribute('onclick')) return;
+            
             // Only handle internal links (same origin, not external, not anchors, not files)
             if (href && 
                 !href.startsWith('http') && 
