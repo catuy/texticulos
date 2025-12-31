@@ -65,7 +65,8 @@
       }
 
       // Video sizing and aspect ratio handling
-      document.addEventListener('DOMContentLoaded', function() {
+      // Execute immediately (not waiting for DOMContentLoaded) so it works in SPA navigation
+      (function() {
         const video = document.querySelector('video');
         if (video) {
           // Function to apply sizing based on video dimensions
@@ -154,7 +155,7 @@
             }
           });
         }
-      });
+      })(); // Execute immediately
     </script>
   </body>
 </html>
