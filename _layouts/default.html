@@ -59,6 +59,17 @@
       let audioEnabled = false;
       let pianoLoaded = false;
 
+      // Load audio preference from localStorage
+      function loadAudioPreference() {
+        const saved = localStorage.getItem('texticulos-audio-enabled');
+        return saved === 'true';
+      }
+
+      // Save audio preference to localStorage
+      function saveAudioPreference(enabled) {
+        localStorage.setItem('texticulos-audio-enabled', enabled.toString());
+      }
+
       function initPiano() {
         if (pianoLoaded) return;
 
@@ -117,6 +128,7 @@
         if (audioEnabled) {
           // Disable audio
           audioEnabled = false;
+          saveAudioPreference(false);
           icon.textContent = 'sonido off';
           icon.title = 'Click to enable audio';
           icon.style.opacity = '0.6';
@@ -127,6 +139,7 @@
 
           Tone.start().then(() => {
             audioEnabled = true;
+            saveAudioPreference(true);
             initPiano();
             // Change to enabled text
             icon.textContent = 'sonido on';
@@ -141,8 +154,45 @@
         }
       }
 
+      // Initialize audio preference on page load
+      function initializeAudioPreference() {
+        const savedPreference = loadAudioPreference();
+        const audioIcon = document.getElementById('audio-toggle');
+
+        if (savedPreference) {
+          // User previously enabled audio, so start it
+          audioEnabled = true;
+          audioIcon.textContent = 'sonido on';
+          audioIcon.title = 'Click to disable audio';
+          audioIcon.style.opacity = '1';
+
+          // Initialize piano in background
+          Tone.start().then(() => {
+            initPiano();
+            console.log('Audio preference restored: enabled');
+          }).catch(err => {
+            console.error('Failed to restore audio:', err);
+            // Reset if failed
+            audioEnabled = false;
+            audioIcon.textContent = 'sonido off';
+            audioIcon.style.opacity = '0.6';
+            saveAudioPreference(false);
+          });
+        } else {
+          // User prefers audio off (default)
+          audioEnabled = false;
+          audioIcon.textContent = 'sonido off';
+          audioIcon.title = 'Click to enable audio';
+          audioIcon.style.opacity = '0.6';
+          console.log('Audio preference: disabled');
+        }
+      }
+
       // Add event listeners
       document.addEventListener('DOMContentLoaded', function() {
+        // Initialize audio preference from localStorage
+        initializeAudioPreference();
+
         // Enable audio icon
         const audioIcon = document.getElementById('audio-toggle');
         audioIcon.addEventListener('click', toggleAudio);
@@ -153,12 +203,12 @@
           link.addEventListener('mouseenter', playRandomPianoNote);
         });
 
-        // Auto-activate audio on first user interaction
+        // Auto-activate audio on first user interaction (only if not previously disabled)
         let audioAutoActivated = false;
         let initialScrollY = window.scrollY;
 
         function autoEnableAudio() {
-          if (!audioEnabled && !audioAutoActivated) {
+          if (!audioEnabled && !audioAutoActivated && !loadAudioPreference()) {
             audioAutoActivated = true;
             // Simulate clicking the toggle button to enable audio
             toggleAudio();
