@@ -111,18 +111,18 @@
         piano.triggerAttackRelease(randomNote, '8n');
       }
 
-      // Auto-activate audio on first user interaction (AGGRESSIVE)
+      // Auto-activate audio on first user interaction
+      // Note: Chrome only allows audio on REAL user gestures (click, keydown, touchstart)
+      // mousemove and scroll are NOT considered valid gestures by browsers
       let isActivating = false;
       
       function removeAudioListeners() {
-        document.removeEventListener('mousemove', tryActivateAudio);
-        document.removeEventListener('click', tryActivateAudio);
-        document.removeEventListener('scroll', tryActivateAudio);
-        document.removeEventListener('keydown', tryActivateAudio);
-        document.removeEventListener('touchstart', tryActivateAudio);
+        document.removeEventListener('click', tryActivateAudio, true);
+        document.removeEventListener('keydown', tryActivateAudio, true);
+        document.removeEventListener('touchstart', tryActivateAudio, true);
       }
       
-      function tryActivateAudio() {
+      function tryActivateAudio(e) {
         // Prevent multiple simultaneous activation attempts
         if (audioActivated || isActivating) return;
         
@@ -180,13 +180,11 @@
           link.addEventListener('mouseenter', playRandomPianoNote);
         });
 
-        // AGGRESSIVE auto-activation: listen to MULTIPLE events
-        // Audio will activate on the FIRST of any of these interactions
-        document.addEventListener('mousemove', tryActivateAudio);
-        document.addEventListener('click', tryActivateAudio);
-        document.addEventListener('scroll', tryActivateAudio, { passive: true });
-        document.addEventListener('keydown', tryActivateAudio);
-        document.addEventListener('touchstart', tryActivateAudio);
+        // Auto-activation: listen ONLY to valid user gestures
+        // Chrome/browsers only allow audio activation on: click, keydown, touchstart
+        document.addEventListener('click', tryActivateAudio, true);
+        document.addEventListener('keydown', tryActivateAudio, true);
+        document.addEventListener('touchstart', tryActivateAudio, true);
       });
 
       // RANDOM TEXT SPACING EFFECT - Comment out this entire block to disable
