@@ -112,22 +112,31 @@
       }
 
       // Auto-activate audio on first user interaction (AGGRESSIVE)
+      let isActivating = false;
+      
+      function removeAudioListeners() {
+        document.removeEventListener('mousemove', tryActivateAudio);
+        document.removeEventListener('click', tryActivateAudio);
+        document.removeEventListener('scroll', tryActivateAudio);
+        document.removeEventListener('keydown', tryActivateAudio);
+        document.removeEventListener('touchstart', tryActivateAudio);
+      }
+      
       function tryActivateAudio() {
-        if (audioActivated) return;
+        // Prevent multiple simultaneous activation attempts
+        if (audioActivated || isActivating) return;
+        
+        isActivating = true;
 
         Tone.start().then(() => {
           audioEnabled = true;
           audioActivated = true;
           initPiano();
-          
           // Remove all listeners after successful activation
-          document.removeEventListener('mousemove', tryActivateAudio);
-          document.removeEventListener('click', tryActivateAudio);
-          document.removeEventListener('scroll', tryActivateAudio);
-          document.removeEventListener('keydown', tryActivateAudio);
-          document.removeEventListener('touchstart', tryActivateAudio);
+          removeAudioListeners();
         }).catch(() => {
-          // Silently fail, will retry on next interaction
+          // Reset flag on failure so it can retry
+          isActivating = false;
         });
       }
 
@@ -173,14 +182,11 @@
 
         // AGGRESSIVE auto-activation: listen to MULTIPLE events
         // Audio will activate on the FIRST of any of these interactions
-        document.addEventListener('mousemove', tryActivateAudio, { once: false });
-        document.addEventListener('click', tryActivateAudio, { once: false });
-        document.addEventListener('scroll', tryActivateAudio, { once: false, passive: true });
-        document.addEventListener('keydown', tryActivateAudio, { once: false });
-        document.addEventListener('touchstart', tryActivateAudio, { once: false });
-
-        // Try to activate immediately (will fail due to browser policy, but worth trying)
-        tryActivateAudio();
+        document.addEventListener('mousemove', tryActivateAudio);
+        document.addEventListener('click', tryActivateAudio);
+        document.addEventListener('scroll', tryActivateAudio, { passive: true });
+        document.addEventListener('keydown', tryActivateAudio);
+        document.addEventListener('touchstart', tryActivateAudio);
       });
 
       // RANDOM TEXT SPACING EFFECT - Comment out this entire block to disable
