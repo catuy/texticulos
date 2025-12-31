@@ -44,7 +44,7 @@
     <!-- Media display -->
     {% if page.portada %}
       {% if page.category == "Video" %}
-        <video controls onload="adjustImageSize(this)" class="fixed bottom-0 right-0 object-contain" style="z-index: 1;">
+        <video controls preload="metadata" playsinline class="fixed bottom-0 right-0 object-contain w-2/3 h-auto" style="z-index: 1;">
           <source src="{{ page.portada | replace: '_frame.webp', '.mp4' | relative_url }}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
@@ -63,6 +63,26 @@
           img.classList.remove('h-screen', 'w-auto');
         }
       }
+
+      // Video sizing - ensure videos get proper dimensions
+      document.addEventListener('DOMContentLoaded', function() {
+        const video = document.querySelector('video');
+        if (video) {
+          // Force video to take 2/3 width like landscape images
+          video.classList.add('w-2/3', 'h-auto');
+          video.classList.remove('h-screen', 'w-auto');
+
+          // Ensure video loads metadata for better playback
+          video.addEventListener('loadedmetadata', function() {
+            console.log('Video loaded:', video.videoWidth, 'x', video.videoHeight);
+          });
+
+          // Handle potential playback issues
+          video.addEventListener('error', function(e) {
+            console.error('Video error:', e);
+          });
+        }
+      });
     </script>
   </body>
 </html>
