@@ -183,30 +183,26 @@
         }
       }
 
+      // Function to initialize audio UI and handlers
+      function initializeAudioUI() {
+        const audioIcon = document.getElementById('audio-toggle');
+        if (!audioIcon) return;
+
+        // Update UI based on current actual state
+        updateAudioUI();
+
+        // Remove old listener if exists
+        const newIcon = audioIcon.cloneNode(true);
+        audioIcon.parentNode.replaceChild(newIcon, audioIcon);
+        
+        // Attach fresh toggle handler
+        newIcon.addEventListener('click', toggleAudio);
+      }
+
       // Initialize on page load
       document.addEventListener('DOMContentLoaded', function() {
-        const audioIcon = document.getElementById('audio-toggle');
-        
-        // Set initial UI based on saved preference
-        const audioWasEnabled = getAudioPreference();
-        if (audioWasEnabled) {
-          if (audioIcon) {
-            audioIcon.textContent = 'sonido on';
-            audioIcon.title = 'Click to disable audio';
-            audioIcon.style.opacity = '1';
-          }
-        } else {
-          if (audioIcon) {
-            audioIcon.textContent = 'sonido off';
-            audioIcon.title = 'Click to enable audio';
-            audioIcon.style.opacity = '0.6';
-          }
-        }
-
-        // Attach toggle handler
-        if (audioIcon) {
-          audioIcon.addEventListener('click', toggleAudio);
-        }
+        // Initialize audio UI
+        initializeAudioUI();
 
         // Add hover sound to clickable projects
         const projectLinks = document.querySelectorAll('a[data-category]');
@@ -309,6 +305,9 @@
 
         // Function to reinitialize page-specific functionality after content load
         function reinitializePageEvents() {
+          // Re-initialize audio UI and toggle
+          initializeAudioUI();
+
           // Re-apply hover sounds to project links
           const projectLinks = document.querySelectorAll('a[data-category]');
           projectLinks.forEach(link => {
