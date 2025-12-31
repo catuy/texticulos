@@ -182,6 +182,8 @@
         const savedPreference = loadAudioPreference();
         const audioIcon = document.getElementById('audio-toggle');
 
+        console.log('initializeAudioPreference called, savedPreference:', savedPreference);
+
         if (savedPreference) {
           // User previously enabled audio - show as enabled but don't start automatically
           audioEnabled = false; // Will be set to true when user clicks
