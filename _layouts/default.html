@@ -159,32 +159,20 @@
         }
       }
 
-      // Initialize audio preference on page load
+      // Initialize audio preference UI on page load (don't start audio automatically)
       function initializeAudioPreference() {
         const savedPreference = loadAudioPreference();
         const audioIcon = document.getElementById('audio-toggle');
 
         if (savedPreference) {
-          // User previously enabled audio, so start it
-          audioEnabled = true;
+          // User previously enabled audio - show as enabled but don't start automatically
+          audioEnabled = false; // Will be set to true when user clicks
           audioIcon.textContent = 'sonido on';
           audioIcon.title = 'Click to disable audio';
           audioIcon.style.opacity = '1';
-
-          // Initialize piano in background
-          Tone.start().then(() => {
-            initPiano();
-            console.log('Audio preference restored: enabled');
-          }).catch(err => {
-            console.error('Failed to restore audio:', err);
-            // Reset if failed
-            audioEnabled = false;
-            audioIcon.textContent = 'sonido off';
-            audioIcon.style.opacity = '0.6';
-            saveAudioPreference(false);
-          });
+          console.log('Audio preference: previously enabled (click to activate)');
         } else {
-          // User prefers audio off (default)
+          // User prefers audio off or never set
           audioEnabled = false;
           audioIcon.textContent = 'sonido off';
           audioIcon.title = 'Click to enable audio';
