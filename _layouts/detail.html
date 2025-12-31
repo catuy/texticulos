@@ -44,8 +44,8 @@
     <!-- Media display -->
     {% if page.portada %}
       {% if page.category == "Video" %}
-        <video controls preload="metadata" playsinline class="fixed bottom-0 right-0 object-contain w-2/3 h-auto" style="z-index: 1;">
-          <source src="{{ page.portada | replace: '_frame.webp', '.mp4' | relative_url }}" type="video/mp4">
+        <video controls preload="none" class="fixed bottom-0 right-0 object-contain w-2/3 h-auto" style="z-index: 1;">
+          <source src="/assets/videos/{{ page.portada | replace: 'assets/videos/', '' | replace: '_frame.webp', '.mp4' }}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
       {% else %}
@@ -88,7 +88,15 @@
 
           // Handle potential playback issues
           video.addEventListener('error', function(e) {
-            console.error('Video error:', e);
+            const error = video.error;
+            console.error('Video error:', {
+              code: error ? error.code : 'Unknown',
+              message: error ? error.message : 'No error details',
+              videoSrc: video.currentSrc,
+              networkState: video.networkState,
+              readyState: video.readyState,
+              event: e
+            });
           });
 
           // Improve video loading and playback
@@ -106,6 +114,24 @@
 
           video.addEventListener('pause', function() {
             console.log('Video paused');
+          });
+
+          // Handle seeking events
+          video.addEventListener('seeking', function() {
+            console.log('Video seeking to:', video.currentTime);
+          });
+
+          video.addEventListener('seeked', function() {
+            console.log('Video seeked to:', video.currentTime);
+          });
+
+          // Ensure video is seekable
+          video.addEventListener('canplay', function() {
+            console.log('Video duration:', video.duration);
+            console.log('Video seekable:', video.seekable);
+            if (video.seekable.length > 0) {
+              console.log('Seekable range:', video.seekable.start(0), 'to', video.seekable.end(0));
+            }
           });
         }
       });
