@@ -214,6 +214,18 @@
           link.addEventListener('mouseenter', playRandomPianoNote);
         });
 
+        // IMPORTANT: Activate audio when clicking on navigation links
+        // This ensures audio is ready BEFORE navigating to the next page
+        const allLinks = document.querySelectorAll('a[href]');
+        allLinks.forEach(link => {
+          link.addEventListener('click', function(e) {
+            // Only activate if audio preference is enabled
+            if (getAudioPreference() && !audioEnabled && !audioContext) {
+              tryActivateAudio();
+            }
+          }, true);
+        });
+
         // Permanent listeners for auto-activation (don't remove them)
         // Only activates if user previously enabled audio
         document.addEventListener('click', tryActivateAudio, true);
