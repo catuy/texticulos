@@ -302,6 +302,117 @@
       });
       // END RANDOM TEXT SPACING EFFECT
 
+      // SPA-like navigation for smooth audio persistence
+      function initSPANavigation() {
+        // Get current origin for checking internal links
+        const currentOrigin = window.location.origin;
+
+        // Function to reinitialize page-specific functionality after content load
+        function reinitializePageEvents() {
+          // Re-apply hover sounds to project links
+          const projectLinks = document.querySelectorAll('a[data-category]');
+          projectLinks.forEach(link => {
+            link.addEventListener('mouseenter', playRandomPianoNote);
+          });
+
+          // Re-apply text spacing effect
+          setTimeout(addRandomSpacesToText, 50);
+
+          // Re-attach SPA navigation to new links
+          attachSPAListeners();
+        }
+
+        // Function to load a page via AJAX
+        function loadPage(url) {
+          fetch(url)
+            .then(response => response.text())
+            .then(html => {
+              // Parse the HTML
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(html, 'text/html');
+              
+              // Extract new main content
+              const newMain = doc.querySelector('main');
+              const currentMain = document.querySelector('main');
+              
+              if (newMain && currentMain) {
+                // Replace main content
+                currentMain.innerHTML = newMain.innerHTML;
+                
+                // Update page title
+                const newTitle = doc.querySelector('title');
+                if (newTitle) {
+                  document.title = newTitle.textContent;
+                }
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+                
+                // Reinitialize events for new content
+                reinitializePageEvents();
+              }
+            })
+            .catch(error => {
+              console.error('Error loading page:', error);
+              // Fallback to normal navigation
+              window.location.href = url;
+            });
+        }
+
+        // Function to attach SPA listeners to links
+        function attachSPAListeners() {
+          const links = document.querySelectorAll('a[href]');
+          
+          links.forEach(link => {
+            // Check if it's an internal link
+            const href = link.getAttribute('href');
+            
+            // Skip if already has SPA listener
+            if (link.hasAttribute('data-spa-attached')) return;
+            
+            // Only handle internal links (same origin, not external, not anchors, not files)
+            if (href && 
+                !href.startsWith('http') && 
+                !href.startsWith('#') && 
+                !href.startsWith('mailto:') &&
+                !href.startsWith('tel:') &&
+                !href.endsWith('.pdf') &&
+                !href.endsWith('.zip')) {
+              
+              link.setAttribute('data-spa-attached', 'true');
+              
+              link.addEventListener('click', function(e) {
+                // Don't prevent if it's audio toggle or external link
+                if (this.id === 'audio-toggle') return;
+                
+                e.preventDefault();
+                
+                const targetUrl = this.href;
+                
+                // Update browser history
+                history.pushState({}, '', targetUrl);
+                
+                // Load the new page
+                loadPage(targetUrl);
+              });
+            }
+          });
+        }
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', function(e) {
+          loadPage(window.location.href);
+        });
+
+        // Initialize on page load
+        attachSPAListeners();
+      }
+
+      // Initialize SPA navigation when DOM is ready
+      document.addEventListener('DOMContentLoaded', function() {
+        initSPANavigation();
+      });
+
     </script>
   </body>
 </html>
