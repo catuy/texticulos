@@ -51,3 +51,11 @@ collections:
   projects:
     output: true
     permalink: /projects/:name/
+
+# WEBrick configuration for video streaming support
+webrick:
+  headers:
+    "Access-Control-Allow-Origin": "*"
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
+    "Access-Control-Allow-Headers": "Content-Type, Range"
+    "Accept-Ranges": "bytes"
