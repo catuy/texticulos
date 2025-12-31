@@ -65,6 +65,11 @@
         return saved === 'true';
       }
 
+      // Check if audio preference was ever set
+      function hasAudioPreference() {
+        return localStorage.getItem('texticulos-audio-enabled') !== null;
+      }
+
       // Save audio preference to localStorage
       function saveAudioPreference(enabled) {
         localStorage.setItem('texticulos-audio-enabled', enabled.toString());
@@ -203,13 +208,14 @@
           link.addEventListener('mouseenter', playRandomPianoNote);
         });
 
-        // Auto-activate audio on first user interaction (only if not previously disabled)
+        // Auto-activate audio on first user interaction (only if preference was never set)
         let audioAutoActivated = false;
         let initialScrollY = window.scrollY;
 
         function autoEnableAudio() {
-          if (!audioEnabled && !audioAutoActivated && !loadAudioPreference()) {
+          if (!audioEnabled && !audioAutoActivated && !hasAudioPreference()) {
             audioAutoActivated = true;
+            console.log('Auto-activating audio for first-time user');
             // Simulate clicking the toggle button to enable audio
             toggleAudio();
             // Remove listeners after first activation
