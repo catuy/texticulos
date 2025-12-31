@@ -331,30 +331,19 @@
               const parser = new DOMParser();
               const doc = parser.parseFromString(html, 'text/html');
               
-              // Check if the new page uses detail layout (has custom header)
+              // Check current and new page types
+              const currentHasCustomHeader = document.querySelector('body > div.relative');
               const newBody = doc.querySelector('body');
-              const hasCustomHeader = doc.querySelector('body > div.relative');
+              const newHasCustomHeader = doc.querySelector('body > div.relative');
               
-              if (hasCustomHeader) {
-                // Detail page: replace entire body content
+              // Always replace entire body if transitioning between different layouts
+              // or if current page is detail (to clean up images/videos)
+              if (newHasCustomHeader || currentHasCustomHeader) {
+                // Replace entire body content
                 const currentBody = document.querySelector('body');
-                
-                // Preserve the scripts from current page (Tone.js, etc.)
-                const scriptsToKeep = Array.from(currentBody.querySelectorAll('script'))
-                  .filter(script => 
-                    script.src.includes('tailwindcss') || 
-                    script.src.includes('Tone.js')
-                  );
                 
                 // Replace body content
                 currentBody.innerHTML = newBody.innerHTML;
-                
-                // Re-add preserved scripts to head
-                scriptsToKeep.forEach(script => {
-                  if (!document.querySelector(`script[src="${script.src}"]`)) {
-                    document.head.appendChild(script.cloneNode(true));
-                  }
-                });
                 
                 // Update page title
                 const newTitle = doc.querySelector('title');
@@ -377,7 +366,7 @@
                 reinitializePageEvents();
                 
               } else {
-                // Standard page: replace just main content
+                // Both are standard pages: replace just main content (more efficient)
                 const newMain = doc.querySelector('main');
                 const currentMain = document.querySelector('main');
                 
