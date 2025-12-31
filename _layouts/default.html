@@ -258,10 +258,10 @@
                 for (let i = 0; i < word.length; i++) {
                   spacedWord += word[i];
 
-                  // Add random spaces between characters (but not at the end)
+                  // Add random thin spaces between characters (but not at the end)
                   if (i < word.length - 1 && Math.random() < spaceProbability) {
                     const numSpaces = Math.floor(Math.random() * maxSpacesPerWord) + 1;
-                    spacedWord += ' '.repeat(numSpaces);
+                    spacedWord += '\u2009'.repeat(numSpaces); // Thin space (narrower than regular space)
                   }
                 }
 
