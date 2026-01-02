@@ -190,6 +190,12 @@
         const audioIcon = document.getElementById('audio-toggle');
         if (!audioIcon) return;
 
+        // Restore audio state from localStorage if not already active
+        if (!audioEnabled && getAudioPreference()) {
+          audioEnabled = true;
+          // Don't need to call Tone.start() here, it will be done on next interaction
+        }
+
         // Update UI based on current actual state
         updateAudioUI();
 
