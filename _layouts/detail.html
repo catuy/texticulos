@@ -53,7 +53,7 @@
     {% if page.portada %}
       {% if page.category == "Video" %}
         {% assign video_filename = page.portada | replace: 'assets/videos/', '' | replace: '_frame.webp', '.mp4' %}
-        <video controls preload="metadata" poster="{{ page.portada | relative_url }}" class="fixed bottom-0 right-0 object-contain" style="z-index: 1;" crossorigin="anonymous">
+        <video controls preload="metadata" poster="{{ page.portada | relative_url }}" class="fixed bottom-0 right-0 object-contain -z-10" onload="adjustImageSize(this)" crossorigin="anonymous">
           <source src="{{ site.baseurl }}/assets/videos/{{ video_filename }}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
