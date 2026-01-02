@@ -133,16 +133,19 @@
       // Auto-activate audio if user previously enabled it
       function tryActivateAudio() {
         // Only auto-activate if user previously enabled audio
-        if (!getAudioPreference() || audioEnabled || audioContext) return;
+        if (!getAudioPreference()) return;
         
-        audioContext = true; // Mark as attempting
-
+        // Check if Tone context is already started
+        if (Tone.context.state === 'running') return;
+        
+        // Try to start audio context
         Tone.start().then(() => {
           audioEnabled = true;
+          audioContext = true;
           initPiano();
           updateAudioUI();
-        }).catch(() => {
-          audioContext = null; // Reset on failure to retry
+        }).catch((err) => {
+          console.log('Audio activation failed:', err);
         });
       }
 
@@ -193,7 +196,10 @@
         // Restore audio state from localStorage if not already active
         if (!audioEnabled && getAudioPreference()) {
           audioEnabled = true;
-          // Don't need to call Tone.start() here, it will be done on next interaction
+          // Initialize piano if not loaded yet
+          if (!pianoLoaded) {
+            initPiano();
+          }
         }
 
         // Update UI based on current actual state
