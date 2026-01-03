@@ -229,6 +229,17 @@
           if (!pianoLoaded) {
             initPiano();
           }
+          // Start audio context if not already running
+          if (Tone.context.state !== 'running') {
+            Tone.start().then(() => {
+              audioContext = true;
+              console.log('Audio context started during UI initialization');
+            }).catch((err) => {
+              console.log('Audio context start failed during UI initialization:', err);
+              audioEnabled = false; // Reset if context start failed
+              updateAudioUI();
+            });
+          }
         }
 
         // Update UI based on current actual state
