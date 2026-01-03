@@ -452,8 +452,18 @@
             showSpecificProject(this);
           });
 
-          // Add mouseleave to restart timer
+          // Add mouseleave to hide image and restart timer
           link.addEventListener('mouseleave', function() {
+            // Hide the image for this project when leaving hover
+            const projectImage = this.querySelector('img');
+            if (projectImage) {
+              projectImage.style.opacity = '0';
+            }
+
+            // Remove underline from this link
+            this.classList.remove('underline');
+
+            // Reset inactivity timer
             resetInactivityTimer();
           });
         });
