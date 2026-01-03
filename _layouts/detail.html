@@ -62,6 +62,13 @@
     {% endif %}
 
     <script>
+      // Handle browser back button from project pages
+      window.addEventListener('popstate', function(e) {
+        console.log('Popstate event on project page, redirecting to:', window.location.href);
+        // For project pages, redirect to the home page URL to trigger proper navigation
+        window.location.href = window.location.href;
+      });
+
       function adjustImageSize(img) {
         if (img.naturalHeight > img.naturalWidth) {
           img.classList.add('h-screen', 'w-auto');
