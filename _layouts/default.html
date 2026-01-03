@@ -178,12 +178,17 @@
         const icon = document.getElementById('audio-toggle');
         if (!icon) return;
 
+        const audioOffIcon = icon.querySelector('.audio-off-icon');
+        const audioOnIcon = icon.querySelector('.audio-on-icon');
+
         if (audioEnabled) {
-          icon.textContent = 'sonido on';
+          if (audioOffIcon) audioOffIcon.style.display = 'none';
+          if (audioOnIcon) audioOnIcon.style.display = 'block';
           icon.title = 'Click to disable audio';
           icon.style.opacity = '1';
         } else {
-          icon.textContent = 'sonido off';
+          if (audioOffIcon) audioOffIcon.style.display = 'block';
+          if (audioOnIcon) audioOnIcon.style.display = 'none';
           icon.title = 'Click to enable audio';
           icon.style.opacity = '0.6';
         }
@@ -363,11 +368,9 @@
         if (!icon) return;
 
         if (autoplayEnabled) {
-          icon.textContent = 'autoplay on';
           icon.title = 'Click to disable autoplay';
           icon.style.opacity = '1';
         } else {
-          icon.textContent = 'autoplay off';
           icon.title = 'Click to enable autoplay';
           icon.style.opacity = '0.6';
         }
