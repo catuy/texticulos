@@ -601,57 +601,67 @@
 
         // Function to load a page via AJAX
         function loadPage(url) {
+          console.log('Loading page:', url);
           fetch(url)
-            .then(response => response.text())
+            .then(response => {
+              console.log('Fetch response status:', response.status);
+              return response.text();
+            })
             .then(html => {
+              console.log('HTML received, length:', html.length);
               // Parse the HTML
               const parser = new DOMParser();
               const doc = parser.parseFromString(html, 'text/html');
-              
+
               // Check current and new page types
               const currentHasCustomHeader = document.querySelector('body > div.relative');
               const newBody = doc.querySelector('body');
               const newHasCustomHeader = doc.querySelector('body > div.relative');
-              
+
+              console.log('Current has custom header:', currentHasCustomHeader);
+              console.log('New has custom header:', newHasCustomHeader);
+
               // Always replace entire body if transitioning between different layouts
               // or if current page is detail (to clean up images/videos)
               if (newHasCustomHeader || currentHasCustomHeader) {
+                console.log('Replacing entire body content');
                 // Replace entire body content
                 const currentBody = document.querySelector('body');
-                
+
                 // Replace body content
                 currentBody.innerHTML = newBody.innerHTML;
-                
+
                 // Update page title
                 const newTitle = doc.querySelector('title');
                 if (newTitle) {
                   document.title = newTitle.textContent;
                 }
-                
+
                 // Scroll to top
                 window.scrollTo(0, 0);
 
                 // Reinitialize events (don't re-execute scripts to avoid variable redeclaration errors)
                 reinitializePageEvents();
-                
+
               } else {
+                console.log('Replacing main content only');
                 // Both are standard pages: replace just main content (more efficient)
                 const newMain = doc.querySelector('main');
                 const currentMain = document.querySelector('main');
-                
+
                 if (newMain && currentMain) {
                   // Replace main content
                   currentMain.innerHTML = newMain.innerHTML;
-                  
+
                   // Update page title
                   const newTitle = doc.querySelector('title');
                   if (newTitle) {
                     document.title = newTitle.textContent;
                   }
-                  
+
                   // Scroll to top
                   window.scrollTo(0, 0);
-                  
+
                   // Reinitialize events for new content
                   reinitializePageEvents();
                 }
@@ -709,6 +719,7 @@
 
         // Handle browser back/forward buttons
         window.addEventListener('popstate', function(e) {
+          console.log('Popstate event fired, loading:', window.location.href);
           loadPage(window.location.href);
         });
 
