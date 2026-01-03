@@ -62,6 +62,14 @@
       let pianoLoaded = false;
       let audioContext = null;
 
+      // Autoplay setup
+      let autoplayEnabled = false;
+      let autoplayActive = false;
+      let autoplayProjects = [];
+      let autoplayTimeout = null;
+      let autoplayPausedByUser = false;
+      let inactivityTimeout = null;
+
       // localStorage helpers
       function getAudioPreference() {
         try {
@@ -76,6 +84,23 @@
           localStorage.setItem('texticulos-audio', enabled ? 'enabled' : 'disabled');
         } catch (e) {
           console.error('Could not save audio preference');
+        }
+      }
+
+      // Autoplay localStorage helpers
+      function getAutoplayPreference() {
+        try {
+          return localStorage.getItem('texticulos-autoplay') === 'enabled';
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function saveAutoplayPreference(enabled) {
+        try {
+          localStorage.setItem('texticulos-autoplay', enabled ? 'enabled' : 'disabled');
+        } catch (e) {
+          console.error('Could not save autoplay preference');
         }
       }
 
@@ -208,9 +233,198 @@
         // Remove old listener if exists
         const newIcon = audioIcon.cloneNode(true);
         audioIcon.parentNode.replaceChild(newIcon, audioIcon);
-        
+
         // Attach fresh toggle handler
         newIcon.addEventListener('click', toggleAudio);
+      }
+
+      // Autoplay functions
+      function collectAutoplayProjects() {
+        autoplayProjects = [];
+        const projectImages = document.querySelectorAll('a[data-category] img');
+        projectImages.forEach(img => {
+          autoplayProjects.push(img);
+        });
+      }
+
+      function showRandomProject() {
+        // Ensure autoplayProjects is initialized
+        if (autoplayProjects.length === 0) {
+          collectAutoplayProjects();
+        }
+        if (autoplayProjects.length === 0) return;
+
+        // Hide all images and remove underlines first
+        autoplayProjects.forEach(img => {
+          img.style.opacity = '0';
+          // Remove underline from parent link
+          const link = img.closest('a');
+          if (link) {
+            link.classList.remove('underline');
+          }
+        });
+
+        // Show random project image
+        const randomIndex = Math.floor(Math.random() * autoplayProjects.length);
+        const randomImage = autoplayProjects[randomIndex];
+        randomImage.style.opacity = '1';
+
+        // Add underline to the corresponding link (imitate hover)
+        const link = randomImage.closest('a');
+        if (link) {
+          link.classList.add('underline');
+        }
+
+        // Play sound
+        playRandomPianoNote();
+
+        // Schedule next random show (ultra fast: 0-1 seconds)
+        const randomDelay = Math.random() * 1000; // 0-1 seconds
+        autoplayTimeout = setTimeout(showRandomProject, randomDelay);
+      }
+
+      function showSpecificProject(projectLink) {
+        // Ensure autoplayProjects is initialized
+        if (autoplayProjects.length === 0) {
+          collectAutoplayProjects();
+        }
+
+        // Remove all underlines first
+        autoplayProjects.forEach(img => {
+          const link = img.closest('a');
+          if (link) {
+            link.classList.remove('underline');
+          }
+        });
+
+        // Find the image for this specific project
+        const projectImage = projectLink.querySelector('img');
+        if (!projectImage) return;
+
+        // Hide all images first
+        autoplayProjects.forEach(img => {
+          img.style.opacity = '0';
+        });
+
+        // Show this specific image
+        projectImage.style.opacity = '1';
+
+        // Add underline to this link
+        projectLink.classList.add('underline');
+
+        // Play sound
+        playRandomPianoNote();
+
+        // Clear current timeout - don't restart autoplay here, let inactivity timer handle it
+        if (autoplayTimeout) {
+          clearTimeout(autoplayTimeout);
+          autoplayTimeout = null;
+        }
+      }
+
+      function startAutoplay() {
+        if (autoplayActive || autoplayPausedByUser) return;
+
+        autoplayActive = true;
+        autoplayPausedByUser = false;
+        collectAutoplayProjects();
+
+        if (autoplayProjects.length > 0) {
+          // Start immediately with first random project
+          showRandomProject();
+        }
+      }
+
+      function stopAutoplay() {
+        autoplayActive = false;
+        if (autoplayTimeout) {
+          clearTimeout(autoplayTimeout);
+          autoplayTimeout = null;
+        }
+
+        // Ensure autoplayProjects is initialized before trying to use it
+        if (autoplayProjects.length === 0) {
+          collectAutoplayProjects();
+        }
+
+        // Hide all autoplay images and remove underlines
+        autoplayProjects.forEach(img => {
+          img.style.opacity = '0';
+          // Remove underline from parent link
+          const link = img.closest('a');
+          if (link) {
+            link.classList.remove('underline');
+          }
+        });
+      }
+
+      function updateAutoplayUI() {
+        const icon = document.getElementById('autoplay-toggle');
+        if (!icon) return;
+
+        if (autoplayEnabled) {
+          icon.textContent = 'autoplay on';
+          icon.title = 'Click to disable autoplay';
+          icon.style.opacity = '1';
+        } else {
+          icon.textContent = 'autoplay off';
+          icon.title = 'Click to enable autoplay';
+          icon.style.opacity = '0.6';
+        }
+      }
+
+      function toggleAutoplay() {
+        if (autoplayEnabled) {
+          // Disable autoplay
+          autoplayEnabled = false;
+          saveAutoplayPreference(false);
+          stopAutoplay();
+          autoplayPausedByUser = true;
+          updateAutoplayUI();
+        } else {
+          // Enable autoplay
+          autoplayEnabled = true;
+          saveAutoplayPreference(true);
+          updateAutoplayUI();
+          // Start autoplay if not already active and user hasn't interacted
+          if (!autoplayActive && !autoplayPausedByUser) {
+            startAutoplay();
+          }
+        }
+      }
+
+      // Reset inactivity timer
+      function resetInactivityTimer() {
+        if (inactivityTimeout) {
+          clearTimeout(inactivityTimeout);
+        }
+        inactivityTimeout = setTimeout(() => {
+          // After 5 seconds of inactivity, resume autoplay if enabled
+          // Reset the paused flag so autoplay can start again
+          autoplayPausedByUser = false;
+          if (autoplayEnabled && !autoplayActive) {
+            startAutoplay();
+          }
+        }, 5000); // 5 seconds
+      }
+
+      // Function to initialize autoplay UI and handlers
+      function initializeAutoplayUI() {
+        const autoplayIcon = document.getElementById('autoplay-toggle');
+        if (!autoplayIcon) return;
+
+        // Restore autoplay state from localStorage, but default to ENABLED if no preference
+        autoplayEnabled = getAutoplayPreference() !== false; // Default to true
+
+        // Update UI based on current state
+        updateAutoplayUI();
+
+        // Remove old listener if exists
+        const newIcon = autoplayIcon.cloneNode(true);
+        autoplayIcon.parentNode.replaceChild(newIcon, autoplayIcon);
+
+        // Attach fresh toggle handler
+        newIcon.addEventListener('click', toggleAutoplay);
       }
 
       // Initialize on page load
@@ -218,10 +432,30 @@
         // Initialize audio UI
         initializeAudioUI();
 
-        // Add hover sound to clickable projects
+        // Initialize autoplay UI
+        initializeAutoplayUI();
+
+        // Add hover sound and manual control to clickable projects
         const projectLinks = document.querySelectorAll('a[data-category]');
         projectLinks.forEach(link => {
-          link.addEventListener('mouseenter', playRandomPianoNote);
+          link.addEventListener('mouseenter', function() {
+            // Stop autoplay when hovering
+            if (autoplayActive) {
+              stopAutoplay();
+              autoplayPausedByUser = true;
+            }
+
+            // Reset inactivity timer
+            resetInactivityTimer();
+
+            // Show this specific project manually
+            showSpecificProject(this);
+          });
+
+          // Add mouseleave to restart timer
+          link.addEventListener('mouseleave', function() {
+            resetInactivityTimer();
+          });
         });
 
         // IMPORTANT: Activate audio when clicking on navigation links
@@ -233,6 +467,13 @@
             if (getAudioPreference() && !audioEnabled && !audioContext) {
               tryActivateAudio();
             }
+
+            // First click anywhere stops autoplay permanently
+            if (!userHasInteracted) {
+              userHasInteracted = true;
+              stopAutoplay();
+              autoplayPausedByUser = true;
+            }
           }, true);
         });
 
@@ -241,6 +482,15 @@
         document.addEventListener('click', tryActivateAudio, true);
         document.addEventListener('keydown', tryActivateAudio, true);
         document.addEventListener('touchstart', tryActivateAudio, true);
+
+        // Autoplay initialization - start if enabled and on homepage
+        if (autoplayEnabled && window.location.pathname === '/' && !userHasInteracted) {
+          // Start immediately (no delay)
+          startAutoplay();
+        }
+
+        // Start inactivity timer initially
+        resetInactivityTimer();
       });
 
       // RANDOM TEXT SPACING EFFECT - Comment out this entire block to disable
@@ -323,6 +573,9 @@
         function reinitializePageEvents() {
           // Re-initialize audio UI and toggle
           initializeAudioUI();
+
+          // Re-initialize autoplay UI and toggle
+          initializeAutoplayUI();
 
           // Re-apply hover sounds to project links
           const projectLinks = document.querySelectorAll('a[data-category]');
