@@ -407,13 +407,13 @@
           clearTimeout(inactivityTimeout);
         }
         inactivityTimeout = setTimeout(() => {
-          // After 5 seconds of inactivity, resume autoplay if enabled
+          // After 10 seconds of inactivity, resume autoplay if enabled
           // Reset the paused flag so autoplay can start again
           autoplayPausedByUser = false;
           if (autoplayEnabled && !autoplayActive) {
             startAutoplay();
           }
-        }, 5000); // 5 seconds
+        }, 10000); // 10 seconds
       }
 
       // Function to initialize autoplay UI and handlers
@@ -498,12 +498,6 @@
         document.addEventListener('click', tryActivateAudio, true);
         document.addEventListener('keydown', tryActivateAudio, true);
         document.addEventListener('touchstart', tryActivateAudio, true);
-
-        // Autoplay initialization - start if enabled and on homepage
-        if (autoplayEnabled && window.location.pathname === '/' && !userHasInteracted) {
-          // Start immediately (no delay)
-          startAutoplay();
-        }
 
         // Start inactivity timer initially
         resetInactivityTimer();
@@ -734,6 +728,14 @@
       document.addEventListener('DOMContentLoaded', function() {
         initSPANavigation();
       });
+
+      // Start autoplay immediately when script loads (ultra fast)
+      if (autoplayEnabled && window.location.pathname === '/' && !userHasInteracted) {
+        // Use requestAnimationFrame for immediate execution after script load
+        requestAnimationFrame(() => {
+          startAutoplay();
+        });
+      }
 
     </script>
   </body>
