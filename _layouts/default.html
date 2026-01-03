@@ -497,11 +497,8 @@
           }, true);
         });
 
-        // Permanent listeners for auto-activation (don't remove them)
-        // Only activates if user previously enabled audio
-        document.addEventListener('click', tryActivateAudio, true);
-        document.addEventListener('keydown', tryActivateAudio, true);
-        document.addEventListener('touchstart', tryActivateAudio, true);
+        // Audio will be activated when user clicks the toggle button
+        // No global auto-activation listeners to avoid interference
 
         // Start inactivity timer initially
         resetInactivityTimer();
