@@ -222,23 +222,16 @@
         const audioIcon = document.getElementById('audio-toggle');
         if (!audioIcon) return;
 
-        // Restore audio state from localStorage if not already active
-        if (!audioEnabled && getAudioPreference()) {
+        // Restore audio state from localStorage
+        if (getAudioPreference()) {
           audioEnabled = true;
           // Initialize piano if not loaded yet
           if (!pianoLoaded) {
             initPiano();
           }
-          // Start audio context if not already running
-          if (Tone.context.state !== 'running') {
-            Tone.start().then(() => {
-              audioContext = true;
-              console.log('Audio context started during UI initialization');
-            }).catch((err) => {
-              console.log('Audio context start failed during UI initialization:', err);
-              audioEnabled = false; // Reset if context start failed
-              updateAudioUI();
-            });
+          // Set audioContext flag if Tone context is already running (persists across page navigation)
+          if (Tone.context.state === 'running') {
+            audioContext = true;
           }
         }
 
@@ -490,8 +483,8 @@
         const allLinks = document.querySelectorAll('a[href]');
         allLinks.forEach(link => {
           link.addEventListener('click', function(e) {
-            // Only activate if audio preference is enabled
-            if (getAudioPreference() && !audioEnabled && !audioContext) {
+            // Only activate if audio preference is enabled and this is a navigation link (not audio toggle)
+            if (getAudioPreference() && !audioEnabled && !audioContext && this.id !== 'audio-toggle') {
               tryActivateAudio();
             }
 
@@ -642,15 +635,7 @@
                 // Scroll to top
                 window.scrollTo(0, 0);
                 
-                // Re-execute page scripts (adjustImageSize, video handlers, etc.)
-                const pageScripts = newBody.querySelectorAll('script:not([src])');
-                pageScripts.forEach(script => {
-                  const newScript = document.createElement('script');
-                  newScript.textContent = script.textContent;
-                  document.body.appendChild(newScript);
-                });
-                
-                // Reinitialize events
+                // Reinitialize events (don't re-execute scripts to avoid variable redeclaration errors)
                 reinitializePageEvents();
                 
               } else {
