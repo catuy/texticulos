@@ -1,5 +1,7 @@
 # textículos
 
+![Portada del proyecto textículos](assets/images/portada.jpg)
+
 Sitio web construido con Jekyll, que presenta la obra completa (poesía, libros y publicaciones) de Gustavo Wojciechowski (Maca). El sitio funciona como archivo digital y plataforma de presentación para trabajos publicados desde 1980 hasta la actualidad.
 
 ## Descripción del Proyecto
