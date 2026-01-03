@@ -7,7 +7,7 @@ layout: default
     {% if project.portada and project.portada contains "picsum.photos" %}
       <div class="opacity-50" data-category="{{ project.category }}">
         <!-- Mobile: Title + Year only -->
-        <div class="md:hidden flex text-[16px] text-black relative px-[21px] py-[8px]">
+        <div class="md:hidden flex text-[16px] text-black relative px-[21px]">
           <p class="flex-1">{{ project.title }}</p>
           <p class="text-right">{{ project.year }}</p>
         </div>
@@ -21,7 +21,7 @@ layout: default
     {% else %}
       <a href="{{ project.url | relative_url }}" class="block opacity-100" data-category="{{ project.category }}">
         <!-- Mobile: Title + Year only -->
-        <div class="md:hidden flex text-[16px] text-black hover:underline transition-all duration-200 relative px-[21px] py-[8px] group">
+        <div class="md:hidden flex text-[16px] text-black hover:underline transition-all duration-200 relative px-[21px] group">
           <p class="flex-1">{{ project.title }}</p>
           <p class="text-right">{{ project.year }}</p>
           {% if project.portada %}
