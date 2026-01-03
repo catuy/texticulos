@@ -367,10 +367,17 @@
         const icon = document.getElementById('autoplay-toggle');
         if (!icon) return;
 
+        const autoplayOnIcon = icon.querySelector('.autoplay-on-icon');
+        const autoplayOffIcon = icon.querySelector('.autoplay-off-icon');
+
         if (autoplayEnabled) {
+          if (autoplayOnIcon) autoplayOnIcon.style.display = 'block';
+          if (autoplayOffIcon) autoplayOffIcon.style.display = 'none';
           icon.title = 'Click to disable autoplay';
           icon.style.opacity = '1';
         } else {
+          if (autoplayOnIcon) autoplayOnIcon.style.display = 'none';
+          if (autoplayOffIcon) autoplayOffIcon.style.display = 'block';
           icon.title = 'Click to enable autoplay';
           icon.style.opacity = '0.6';
         }
