@@ -62,12 +62,11 @@
       let pianoLoaded = false;
       let audioContext = null;
 
-      // Autoplay setup
-      let autoplayEnabled = false;
+      // Autoplay setup - always enabled
+      let autoplayEnabled = true;
       let autoplayActive = false;
       let autoplayProjects = [];
       let autoplayTimeout = null;
-      let autoplayPausedByUser = false;
       let inactivityTimeout = null;
 
       // localStorage helpers
@@ -328,10 +327,9 @@
       }
 
       function startAutoplay() {
-        if (autoplayActive || autoplayPausedByUser) return;
+        if (autoplayActive) return;
 
         autoplayActive = true;
-        autoplayPausedByUser = false;
         collectAutoplayProjects();
 
         if (autoplayProjects.length > 0) {
@@ -442,8 +440,7 @@
         // Initialize audio UI
         initializeAudioUI();
 
-        // Initialize autoplay UI
-        initializeAutoplayUI();
+
 
         // Add hover sound and manual control to clickable projects
         const projectLinks = document.querySelectorAll('a[data-category]');
@@ -452,7 +449,6 @@
             // Stop autoplay when hovering
             if (autoplayActive) {
               stopAutoplay();
-              autoplayPausedByUser = true;
             }
 
             // Reset inactivity timer
@@ -594,8 +590,7 @@
           // Re-initialize audio UI and toggle
           initializeAudioUI();
 
-          // Re-initialize autoplay UI and toggle
-          initializeAutoplayUI();
+
 
           // Re-apply hover sounds to project links
           const projectLinks = document.querySelectorAll('a[data-category]');
