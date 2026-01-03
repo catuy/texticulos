@@ -92,15 +92,7 @@
                 // Scroll to top
                 window.scrollTo(0, 0);
 
-                // Re-execute page scripts (adjustImageSize, video handlers, etc.)
-                const pageScripts = newBody.querySelectorAll('script:not([src])');
-                pageScripts.forEach(script => {
-                  const newScript = document.createElement('script');
-                  newScript.textContent = script.textContent;
-                  document.body.appendChild(newScript);
-                });
-
-                // Reinitialize events
+                // Reinitialize events (don't re-execute scripts to avoid variable redeclaration errors)
                 reinitializePageEvents();
 
               } else {

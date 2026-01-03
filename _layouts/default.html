@@ -497,8 +497,29 @@
           }, true);
         });
 
-        // Audio will be activated when user clicks the toggle button
-        // No global auto-activation listeners to avoid interference
+        // Permanent listeners for auto-activation (don't remove them)
+        // Only activates if user previously enabled audio and not already active
+        if (getAudioPreference() && !audioEnabled && !audioContext) {
+          document.addEventListener('click', function(e) {
+            // Don't activate if clicking on audio toggle (avoid interference)
+            if (e.target.closest('#audio-toggle')) return;
+            tryActivateAudio();
+            // Remove listener after first activation to avoid repeated calls
+            document.removeEventListener('click', arguments.callee, true);
+          }, true);
+
+          document.addEventListener('keydown', function(e) {
+            tryActivateAudio();
+            // Remove listener after first activation
+            document.removeEventListener('keydown', arguments.callee, true);
+          }, true);
+
+          document.addEventListener('touchstart', function(e) {
+            tryActivateAudio();
+            // Remove listener after first activation
+            document.removeEventListener('touchstart', arguments.callee, true);
+          }, true);
+        }
 
         // Start inactivity timer initially
         resetInactivityTimer();
