@@ -174,23 +174,28 @@
       }
 
       function updateAudioUI() {
-        const icon = document.getElementById('audio-toggle');
-        if (!icon) return;
+        // Update both mobile and desktop audio toggles
+        const icons = [
+          document.getElementById('audio-toggle'),
+          document.getElementById('audio-toggle-mobile')
+        ].filter(icon => icon !== null);
 
-        const audioOffIcon = icon.querySelector('.audio-off-icon');
-        const audioOnIcon = icon.querySelector('.audio-on-icon');
+        icons.forEach(icon => {
+          const audioOffIcon = icon.querySelector('.audio-off-icon');
+          const audioOnIcon = icon.querySelector('.audio-on-icon');
 
-        if (audioEnabled) {
-          if (audioOffIcon) audioOffIcon.style.display = 'none';
-          if (audioOnIcon) audioOnIcon.style.display = 'block';
-          icon.title = 'Click to disable audio';
-          icon.style.opacity = '1';
-        } else {
-          if (audioOffIcon) audioOffIcon.style.display = 'block';
-          if (audioOnIcon) audioOnIcon.style.display = 'none';
-          icon.title = 'Click to enable audio';
-          icon.style.opacity = '0.6';
-        }
+          if (audioEnabled) {
+            if (audioOffIcon) audioOffIcon.style.display = 'none';
+            if (audioOnIcon) audioOnIcon.style.display = 'block';
+            icon.title = 'Click to disable audio';
+            icon.style.opacity = '1';
+          } else {
+            if (audioOffIcon) audioOffIcon.style.display = 'block';
+            if (audioOnIcon) audioOnIcon.style.display = 'none';
+            icon.title = 'Click to enable audio';
+            icon.style.opacity = '0.6';
+          }
+        });
       }
 
       function toggleAudio() {
@@ -208,19 +213,46 @@
             initPiano();
             updateAudioUI();
           }).catch(() => {
-            const icon = document.getElementById('audio-toggle');
-            if (icon) {
+            // Show error on both mobile and desktop audio toggles
+            const icons = [
+              document.getElementById('audio-toggle'),
+              document.getElementById('audio-toggle-mobile')
+            ].filter(icon => icon !== null);
+
+            icons.forEach(icon => {
               icon.textContent = 'error';
               icon.title = 'Audio failed to start';
-            }
+            });
           });
         }
       }
 
       // Function to initialize audio UI and handlers
       function initializeAudioUI() {
-        const audioIcon = document.getElementById('audio-toggle');
+        console.log('Initializing audio UI...');
+
+        // Check which layout is visible (mobile or desktop)
+        const isMobile = window.innerWidth < 768; // md breakpoint
+        console.log('Is mobile layout:', isMobile);
+
+        // Check for both mobile and desktop audio toggles
+        let audioIcon;
+        if (isMobile) {
+          audioIcon = document.getElementById('audio-toggle-mobile');
+          console.log('Looking for mobile audio toggle');
+        } else {
+          audioIcon = document.getElementById('audio-toggle');
+          console.log('Looking for desktop audio toggle');
+        }
+
+        console.log('Audio icon found:', audioIcon ? audioIcon.id : 'none');
         if (!audioIcon) return;
+
+        // Add direct click listener for debugging
+        audioIcon.addEventListener('click', function(e) {
+          console.log('Direct click listener triggered on:', this.id);
+          e.stopPropagation();
+        });
 
         // Restore audio state from localStorage if not already active
         if (!audioEnabled && getAudioPreference()) {
@@ -456,6 +488,16 @@
 
             // Show this specific project manually
             showSpecificProject(this);
+
+            // Also show hover images for desktop
+            if (window.innerWidth >= 768) { // Desktop breakpoint
+              const hoverImages = this.querySelectorAll('img');
+              hoverImages.forEach(img => {
+                if (img.classList.contains('group-hover:opacity-100')) {
+                  img.style.opacity = '1';
+                }
+              });
+            }
           });
 
           // Add mouseleave to hide image and restart timer
@@ -468,6 +510,14 @@
 
             // Remove underline from this link
             this.classList.remove('underline');
+
+            // Also hide hover images for desktop
+            const hoverImages = this.querySelectorAll('img');
+            hoverImages.forEach(img => {
+              if (img.classList.contains('group-hover:opacity-100')) {
+                img.style.opacity = '0';
+              }
+            });
 
             // Reset inactivity timer
             resetInactivityTimer();
@@ -701,8 +751,8 @@
               
               link.addEventListener('click', function(e) {
                 // Don't prevent if it's audio toggle or external link
-                if (this.id === 'audio-toggle') return;
-                
+                if (this.id === 'audio-toggle' || this.id === 'audio-toggle-mobile') return;
+
                 e.preventDefault();
                 
                 const targetUrl = this.href;
