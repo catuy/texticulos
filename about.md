@@ -8,9 +8,9 @@ Gustavo Wojciechowski (Maca) es poeta, editor y gestor cultural uruguayo. Su obr
 
 Esta web reúne su producción artística y literaria: libros, discos, antologías y proyectos audiovisuales que documentan más de cuatro décadas de creación ininterrumpida.
 
-Este proyecto es de código abierto y accesible para quien quiera explorarlo, modificarlo o aprender de él. El código fuente está disponible en: [github.com/catuy/texticulos](https://github.com/catuy/texticulos)
+El proyecto está desarrollado con Jekyll y se ejecuta sobre GitHub Pages. Todo el código es abierto y accesible, y puede ser clonado, reutilizado o modificado para otros proyectos, educativos o editoriales, manteniendo el espíritu de circulación y acceso libre al conocimiento.
 
-Sitio desarrollado y mantenido por Diego Cataldo con amor.
+Repositorio: [github.com/catuy/texticulos](https://github.com/catuy/texticulos)
 
-**¡Viva la poesía! ¡Viva el código abierto!**
+¡Viva la poesía! ¡Viva el código abierto!
 
