@@ -1,148 +1,150 @@
 # textículos
 
-This is a Jekyll-based portfolio website showcasing the literary works (poetry, books, and publications) of [Author Name]. The site serves as a digital archive and presentation platform for published works spanning from 1980 to present.
+Sitio web de portafolio literario construido con Jekyll, que presenta la obra completa (poesía, libros y publicaciones) de Gustavo Wojciechowski (Maca). El sitio funciona como archivo digital y plataforma de presentación para trabajos publicados desde 1980 hasta la actualidad.
 
-## Project Overview
+## Descripción del Proyecto
 
-- **Technology**: Static site built with Jekyll
-- **Theme**: Minima
-- **Content**: Collection of poetry books, visual poetry, and literary publications
-- **Structure**: Each work is presented as a project page with cover image, description, and publication details
+- **Tecnología**: Sitio estático construido con Jekyll
+- **Contenido**: Colección de libros de poesía, poesía visual y publicaciones literarias
+- **Estructura**: Cada obra se presenta como una página de proyecto con imagen de portada, descripción y detalles de publicación
+- **Diseño**: Desarrollo personalizado con diseño responsive y funcionalidades interactivas
 
-## Site Structure
+## Estructura del Sitio
 
 ```
-├── _config.yml          # Jekyll configuration
-├── _layouts/            # Page templates
-│   ├── default.html     # Base layout
-│   ├── home.html        # Homepage layout
-│   ├── about.html       # About page layout
-│   └── detail.html      # Project detail layout
-├── _includes/           # Reusable HTML components
-│   ├── header.html      # Site header
-│   ├── footer.html      # Site footer
-│   └── social.html      # Social media links
-├── _projects/           # Literary works (Jekyll collection)
-│   └── YYYY-title.md    # Individual project pages
-├── assets/              # Static assets
-│   └── images/          # Cover images and graphics
-├── index.md             # Homepage
-├── about.md             # About page
-└── Gemfile              # Ruby dependencies
+├── _config.yml          # Configuración de Jekyll
+├── _layouts/            # Plantillas de página
+│   ├── default.html     # Layout base
+│   ├── home.html        # Layout de página principal
+│   ├── about.html       # Layout de página "Acerca de"
+│   └── detail.html      # Layout de detalle de proyecto
+├── _includes/           # Componentes HTML reutilizables
+│   ├── header.html      # Cabecera del sitio
+│   ├── footer.html      # Pie de página
+│   └── social.html      # Enlaces de redes sociales
+├── _projects/           # Obras literarias (colección Jekyll)
+│   └── YYYY-title.md    # Páginas individuales de proyectos
+├── assets/              # Recursos estáticos
+│   ├── images/          # Imágenes de portadas y gráficos
+│   ├── pdf/             # Archivos PDF de publicaciones
+│   └── videos/          # Contenido audiovisual
+├── index.md             # Página principal
+├── about.md             # Página "Acerca de"
+└── Gemfile              # Dependencias Ruby
 ```
 
-## Setup and Development
+## Configuración y Desarrollo
 
-### Prerequisites
+### Prerrequisitos
 
-- Ruby (version 2.5.0 or higher)
+- Ruby (versión 2.5.0 o superior)
 - Bundler (`gem install bundler`)
 
-### Installation
+### Instalación
 
-1. Clone the repository:
+1. Clona el repositorio:
    ```bash
    git clone https://github.com/catuy/texticulos.git
    cd texticulos
    ```
 
-2. Install dependencies:
+2. Instala las dependencias:
    ```bash
    bundle install
    ```
 
-3. Serve the site locally:
+3. Ejecuta el sitio localmente:
    ```bash
    bundle exec jekyll serve
    ```
 
-4. Open your browser to `http://localhost:4000`
+4. Abre tu navegador en `http://localhost:4000`
 
-### Build for Production
+### Construcción para Producción
 
 ```bash
 bundle exec jekyll build
 ```
 
-The generated site will be in the `_site/` directory.
+El sitio generado estará en el directorio `_site/`.
 
-## Adding New Projects
+## Agregar Nuevos Proyectos
 
-To add a new literary work to the portfolio:
+Para agregar una nueva obra literaria al portafolio:
 
-1. Create a new Markdown file in the `_projects/` directory with the naming convention: `YYYY-title.md`
+1. Crea un nuevo archivo Markdown en el directorio `_projects/` siguiendo la convención de nomenclatura: `YYYY-title.md`
 
-2. Use the following front matter template:
+2. Usa la siguiente plantilla de front matter:
 
 ```yaml
 ---
 layout: detail
-title: "WORK TITLE"
+title: "TÍTULO DE LA OBRA"
 year: YYYY
-category: "Libros"  # or other appropriate category
-description: "Full description of the work, including publisher and publication details"
-portada: "assets/images/cover-image.webp"  # Path to cover image
+category: "Libros"  # o cualquier otra categoría apropiada
+description: "Descripción completa de la obra, incluyendo editorial y detalles de publicación"
+portada: "assets/images/imagen-portada.webp"  # Ruta a la imagen de portada
 ---
 ```
 
-3. Add the cover image to `assets/images/`
+3. Agrega la imagen de portada a `assets/images/`
 
-4. Commit and push the changes
+4. Confirma y sube los cambios
 
-### Front Matter Fields
+### Campos del Front Matter
 
-- `layout`: Always `detail` for projects
-- `title`: The title of the work
-- `year`: Publication year
-- `category`: Usually "Libros" for books
-- `description`: Detailed description including publisher info
-- `portada`: Relative path to the cover image
+- `layout`: Siempre `detail` para proyectos
+- `title`: El título de la obra
+- `year`: Año de publicación
+- `category`: Usualmente "Libros" para libros
+- `description`: Descripción detallada incluyendo información de la editorial
+- `portada`: Ruta relativa a la imagen de portada
 
-## Customization
+## Personalización
 
-### Site Configuration
+### Configuración del Sitio
 
-Edit `_config.yml` to modify:
-- Site title and metadata
-- Theme settings
-- Collection configurations
-- Build settings
+Edita `_config.yml` para modificar:
+- Título del sitio y metadatos
+- Configuraciones de colecciones
+- Configuraciones de construcción
+- Variables personalizadas
 
-### Styling
+### Estilos
 
-The site uses the Minima theme. Custom styles can be added by:
-1. Creating `_sass/` directory for SCSS files
-2. Modifying theme files in `_layouts/` and `_includes/`
+El sitio utiliza un diseño personalizado. Los estilos se pueden modificar:
+1. Editando los archivos en `_layouts/` y `_includes/`
+2. Agregando estilos CSS personalizados
 
 ### Layouts
 
-- `default.html`: Base template with HTML structure
-- `home.html`: Homepage listing all projects
-- `detail.html`: Individual project pages
-- `about.html`: About page
+- `default.html`: Plantilla base con estructura HTML
+- `home.html`: Página principal listando todos los proyectos
+- `detail.html`: Páginas individuales de proyectos
+- `about.html`: Página "Acerca de"
 
-## Deployment
+## Despliegue
 
-The site is designed to be deployed to GitHub Pages or any static hosting service. The `_site/` directory contains the built static files.
+El sitio está diseñado para desplegarse en GitHub Pages o cualquier servicio de hosting estático. El directorio `_site/` contiene los archivos estáticos generados.
 
-For GitHub Pages deployment:
-1. Ensure the repository is public
-2. Enable GitHub Pages in repository settings
-3. Set source to "main" branch (or "gh-pages" if using that workflow)
+Para despliegue en GitHub Pages:
+1. Asegúrate de que el repositorio sea público
+2. Habilita GitHub Pages en la configuración del repositorio
+3. Establece la fuente en la rama "main" (o "gh-pages" si usas ese flujo de trabajo)
 
-## Contributing
+## Contribución
 
-When working on this repository:
+Al trabajar en este repositorio:
 
-1. Follow the existing file naming conventions
-2. Test changes locally with `bundle exec jekyll serve`
-3. Ensure all new images are optimized for web
-4. Update this README if adding new features or changing structure
+1. Sigue las convenciones de nomenclatura existentes
+2. Prueba los cambios localmente con `bundle exec jekyll serve`
+3. Asegúrate de que todas las imágenes nuevas estén optimizadas para web
+4. Actualiza este README si agregas nuevas características o cambias la estructura
 
-## License
+## Licencia
 
-[Add license information if applicable]
+Este proyecto es de código abierto y está disponible para exploración, modificación y aprendizaje.
 
 ---
 
-Built with [Jekyll](https://jekyllrb.com/) and the [Minima](https://github.com/jekyll/minima) theme.
+Construido con [Jekyll](https://jekyllrb.com/) - Desarrollo personalizado.
