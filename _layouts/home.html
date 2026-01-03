@@ -21,9 +21,12 @@ layout: default
     {% else %}
       <a href="{{ project.url | relative_url }}" class="block opacity-100" data-category="{{ project.category }}">
         <!-- Mobile: Title + Year only -->
-        <div class="md:hidden flex text-[16px] text-black hover:underline transition-all duration-200 relative px-[21px] py-[8px]">
+        <div class="md:hidden flex text-[16px] text-black hover:underline transition-all duration-200 relative px-[21px] py-[8px] group">
           <p class="flex-1">{{ project.title }}</p>
           <p class="text-right">{{ project.year }}</p>
+          {% if project.portada %}
+            <img src="{{ project.portada | relative_url }}" alt="" onload="adjustImageSize(this)" class="fixed bottom-0 right-0 object-contain opacity-0 group-hover:opacity-100 -z-10">
+          {% endif %}
         </div>
         <!-- Desktop: Title + Category + Year -->
         <div class="hidden md:flex text-[16px] text-black hover:underline transition-all duration-200 relative group">
