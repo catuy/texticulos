@@ -97,7 +97,10 @@
       // Video sizing and aspect ratio handling
       // Execute immediately (not waiting for DOMContentLoaded) so it works in SPA navigation
       (function() {
-        const video = document.querySelector('video');
+        // Only apply sizing to desktop video (skip mobile)
+        if (window.innerWidth < 768) return;
+
+        const video = document.querySelector('video.hidden.md\\:block');
         if (video) {
           // Function to apply sizing based on video dimensions
           function applyVideoSizing() {
