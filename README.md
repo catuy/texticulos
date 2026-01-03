@@ -147,4 +147,4 @@ Este proyecto es de código abierto y está disponible para exploración, modifi
 
 ---
 
-Construido con [Jekyll](https://jekyllrb.com/) - Desarrollo personalizado.
+Construido con [Jekyll](https://jekyllrb.com/)
