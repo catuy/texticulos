@@ -720,11 +720,6 @@
           loadPage(window.location.href);
         });
 
-        // Push initial state to history for proper back button support
-        if (!window.history.state) {
-          history.replaceState({ url: window.location.href }, '', window.location.href);
-        }
-
         // Initialize on page load
         attachSPAListeners();
       }
