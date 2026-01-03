@@ -488,6 +488,16 @@
 
             // Show this specific project manually
             showSpecificProject(this);
+
+            // Also show hover images for desktop
+            if (window.innerWidth >= 768) { // Desktop breakpoint
+              const hoverImages = this.querySelectorAll('img');
+              hoverImages.forEach(img => {
+                if (img.classList.contains('group-hover:opacity-100')) {
+                  img.style.opacity = '1';
+                }
+              });
+            }
           });
 
           // Add mouseleave to hide image and restart timer
@@ -500,6 +510,14 @@
 
             // Remove underline from this link
             this.classList.remove('underline');
+
+            // Also hide hover images for desktop
+            const hoverImages = this.querySelectorAll('img');
+            hoverImages.forEach(img => {
+              if (img.classList.contains('group-hover:opacity-100')) {
+                img.style.opacity = '0';
+              }
+            });
 
             // Reset inactivity timer
             resetInactivityTimer();
