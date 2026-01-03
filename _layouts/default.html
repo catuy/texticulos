@@ -62,12 +62,11 @@
       let pianoLoaded = false;
       let audioContext = null;
 
-      // Autoplay setup
-      let autoplayEnabled = false;
+      // Autoplay setup - always enabled
+      let autoplayEnabled = true;
       let autoplayActive = false;
       let autoplayProjects = [];
       let autoplayTimeout = null;
-      let autoplayPausedByUser = false;
       let inactivityTimeout = null;
 
       // localStorage helpers
@@ -178,12 +177,17 @@
         const icon = document.getElementById('audio-toggle');
         if (!icon) return;
 
+        const audioOffIcon = icon.querySelector('.audio-off-icon');
+        const audioOnIcon = icon.querySelector('.audio-on-icon');
+
         if (audioEnabled) {
-          icon.textContent = 'sonido on';
+          if (audioOffIcon) audioOffIcon.style.display = 'none';
+          if (audioOnIcon) audioOnIcon.style.display = 'block';
           icon.title = 'Click to disable audio';
           icon.style.opacity = '1';
         } else {
-          icon.textContent = 'sonido off';
+          if (audioOffIcon) audioOffIcon.style.display = 'block';
+          if (audioOnIcon) audioOnIcon.style.display = 'none';
           icon.title = 'Click to enable audio';
           icon.style.opacity = '0.6';
         }
@@ -323,10 +327,9 @@
       }
 
       function startAutoplay() {
-        if (autoplayActive || autoplayPausedByUser) return;
+        if (autoplayActive) return;
 
         autoplayActive = true;
-        autoplayPausedByUser = false;
         collectAutoplayProjects();
 
         if (autoplayProjects.length > 0) {
@@ -362,12 +365,17 @@
         const icon = document.getElementById('autoplay-toggle');
         if (!icon) return;
 
+        const autoplayOnIcon = icon.querySelector('.autoplay-on-icon');
+        const autoplayOffIcon = icon.querySelector('.autoplay-off-icon');
+
         if (autoplayEnabled) {
-          icon.textContent = 'autoplay on';
+          if (autoplayOnIcon) autoplayOnIcon.style.display = 'block';
+          if (autoplayOffIcon) autoplayOffIcon.style.display = 'none';
           icon.title = 'Click to disable autoplay';
           icon.style.opacity = '1';
         } else {
-          icon.textContent = 'autoplay off';
+          if (autoplayOnIcon) autoplayOnIcon.style.display = 'none';
+          if (autoplayOffIcon) autoplayOffIcon.style.display = 'block';
           icon.title = 'Click to enable autoplay';
           icon.style.opacity = '0.6';
         }
@@ -399,13 +407,13 @@
           clearTimeout(inactivityTimeout);
         }
         inactivityTimeout = setTimeout(() => {
-          // After 5 seconds of inactivity, resume autoplay if enabled
+          // After 10 seconds of inactivity, resume autoplay if enabled
           // Reset the paused flag so autoplay can start again
           autoplayPausedByUser = false;
           if (autoplayEnabled && !autoplayActive) {
             startAutoplay();
           }
-        }, 5000); // 5 seconds
+        }, 10000); // 10 seconds
       }
 
       // Function to initialize autoplay UI and handlers
@@ -432,8 +440,7 @@
         // Initialize audio UI
         initializeAudioUI();
 
-        // Initialize autoplay UI
-        initializeAutoplayUI();
+
 
         // Add hover sound and manual control to clickable projects
         const projectLinks = document.querySelectorAll('a[data-category]');
@@ -442,7 +449,6 @@
             // Stop autoplay when hovering
             if (autoplayActive) {
               stopAutoplay();
-              autoplayPausedByUser = true;
             }
 
             // Reset inactivity timer
@@ -492,12 +498,6 @@
         document.addEventListener('click', tryActivateAudio, true);
         document.addEventListener('keydown', tryActivateAudio, true);
         document.addEventListener('touchstart', tryActivateAudio, true);
-
-        // Autoplay initialization - start if enabled and on homepage
-        if (autoplayEnabled && window.location.pathname === '/' && !userHasInteracted) {
-          // Start immediately (no delay)
-          startAutoplay();
-        }
 
         // Start inactivity timer initially
         resetInactivityTimer();
@@ -584,8 +584,7 @@
           // Re-initialize audio UI and toggle
           initializeAudioUI();
 
-          // Re-initialize autoplay UI and toggle
-          initializeAutoplayUI();
+
 
           // Re-apply hover sounds to project links
           const projectLinks = document.querySelectorAll('a[data-category]');
@@ -729,6 +728,14 @@
       document.addEventListener('DOMContentLoaded', function() {
         initSPANavigation();
       });
+
+      // Start autoplay immediately when script loads (ultra fast)
+      if (autoplayEnabled && window.location.pathname === '/' && !userHasInteracted) {
+        // Use requestAnimationFrame for immediate execution after script load
+        requestAnimationFrame(() => {
+          startAutoplay();
+        });
+      }
 
     </script>
   </body>
