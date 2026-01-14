@@ -3,7 +3,7 @@ layout: default
 ---
 
 <div class="flex flex-col w-full">
-  {% for project in site.projects | sort: 'year' | reverse %}
+  {% for project in site.projects | sort: "year" | reverse %}
     {% if project.portada and project.portada contains "picsum.photos" %}
       <div class="opacity-50" data-category="{{ project.category }}">
         <!-- Mobile: Title + Year only -->
