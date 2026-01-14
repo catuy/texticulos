@@ -189,6 +189,46 @@
           });
         }
       })(); // Execute immediately
+
+      // Handle YouTube videos: move iframe to fixed position on desktop, keep in content on mobile
+      (function() {
+        const iframe = document.querySelector('.detail-content iframe');
+        if (iframe) {
+          if (window.innerWidth >= 768) { // Desktop
+            // Clone the iframe
+            const clonedIframe = iframe.cloneNode(true);
+
+            // Style it fixed like self-hosted videos
+            clonedIframe.style.position = 'fixed';
+            clonedIframe.style.bottom = '0';
+            clonedIframe.style.right = '0';
+            clonedIframe.style.width = '66.666%';
+            clonedIframe.style.height = 'auto';
+            clonedIframe.style.zIndex = '50';
+
+            // Remove original width/height attributes
+            clonedIframe.removeAttribute('width');
+            clonedIframe.removeAttribute('height');
+
+            // Add to body
+            document.body.appendChild(clonedIframe);
+
+            // Hide original container
+            const container = iframe.closest('div');
+            if (container && container.style.position === 'relative') {
+              container.style.display = 'none';
+            } else {
+              iframe.style.display = 'none';
+            }
+          } else { // Mobile - keep in content but make responsive
+            const container = iframe.closest('div');
+            if (container && container.style.position === 'relative') {
+              container.style.width = '100%';
+              container.style.paddingBottom = container.style.paddingBottom; // Keep aspect ratio
+            }
+          }
+        }
+      })(); // Execute immediately
     </script>
   </body>
 </html>
