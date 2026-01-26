@@ -3,6 +3,8 @@ layout: detail
 title: "Malversaciones"
 year: 2020
 category: "Antologías"
-description: "Malversaciones (antología) (Ediciones Un Temporada en Isla Negra, Chile. 2020)"
-portada: "https://picsum.photos/600/400?random=12"
+description: "Antología. Ediciones Una Temporada en Isla Negra, Chile, 2020."
+portada: "assets/images/2020-malversaciones.webp"
 ---
+
+[Descargar PDF]({{ site.baseurl }}/assets/pdf/2020-malversaciones.pdf){:target="_blank"}
